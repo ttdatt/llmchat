@@ -1,6 +1,7 @@
-import { Affix, Group, MantineProvider, Stack, Textarea } from '@mantine/core';
+import { MantineProvider, Stack } from '@mantine/core';
 import { ChatMessage } from './components/chat/ChatMessage';
 import { DoubleNavbar } from './components/nav/Nav';
+import { ChatInput } from './components/ChatInput';
 
 function App() {
   return (
@@ -29,14 +30,7 @@ Creating and Configuring a Pre-Push Hook
     Navigate to the hooks directory:`}
             />
           </Stack>
-          <Textarea
-            autosize
-            maxRows={6}
-            style={{
-              position: 'sticky',
-              bottom: 0,
-            }}
-          />
+          <ChatInput />
         </div>
       </div>
     </MantineProvider>
