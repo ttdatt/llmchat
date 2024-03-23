@@ -8,4 +8,6 @@ export type AppState = {
   setCurrentThread: (thread: Thread) => void;
   sendMessage: (message: string) => void;
   deleteThread: (threadId: string) => void;
+  streamMessages: (text: string) => void;
+  finishStreamingMessages: () => void;
 };

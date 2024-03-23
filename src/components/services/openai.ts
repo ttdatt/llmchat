@@ -1,35 +1,41 @@
-import { getClient, Client, Body } from '@tauri-apps/api/http';
+import OpenAI from 'openai';
+import { useAppStore } from '../../store';
+import { Thread } from '../../types/Message';
 
-let client: Client | null = null;
+const openai = new OpenAI({
+  apiKey: import.meta.env.VITE_OPENAI_KEY,
+  dangerouslyAllowBrowser: true,
+});
 
-const initHttpClient = async () => {
-  client = await getClient();
-};
+const askOpenAi = async (question: string, thread: Thread) => {
+  if (!question) return;
 
-const askOpenAi = async () => {
-  if (!client) return;
-
-  const response = await client.post(
-    'https://api.openai.com/v1/chat/completions',
-    Body.json({
-      model: 'gpt-4-turbo-preview',
-      messages: [
-        {
-          role: 'user',
-          content:
-            'with reactjs, i have 2 div side by side. They both have long text content. I want to have separate scroll for each div. How to do?',
-        },
-      ],
-    }),
-    {
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${import.meta.env.VITE_OPENAI_KEY}`,
+  const stream = await openai.chat.completions.create({
+    model: 'gpt-4-turbo-preview',
+    messages: [
+      {
+        role: 'system',
+        content: 'Do not answer too long. Less than 50 words',
       },
-    }
-  );
-  console.log(response);
-  return response;
+      ...thread.messages.map(x => ({
+        role: x.owner,
+        content: x.text,
+      })),
+      {
+        role: 'user',
+        content: question,
+      },
+    ],
+    stream: true,
+  });
+
+  for await (const chunk of stream) {
+    useAppStore
+      .getState()
+      .streamMessages(chunk.choices[0]?.delta?.content || '');
+  }
+
+  useAppStore.getState().finishStreamingMessages();
 };
 
-export { initHttpClient, askOpenAi };
+export { askOpenAi };

@@ -2,6 +2,8 @@ import { Text } from '@mantine/core';
 import { Message } from '../../types/Message';
 import { GptIcon } from '../../assets/gpt';
 import { IconUserFilled } from '@tabler/icons-react';
+import { TestMarkdown } from '../TestMarkdown';
+import Markdown from 'react-markdown';
 
 type ChatMessageProps = {
   message: Message;
@@ -31,7 +33,6 @@ export const ChatMessage = ({ message }: ChatMessageProps) => {
         display: 'flex',
         flexDirection: 'row',
         padding: 10,
-        flexWrap: 'nowrap',
         gap: 8,
       }}>
       {renderIcon()}
@@ -39,9 +40,10 @@ export const ChatMessage = ({ message }: ChatMessageProps) => {
         <Text size='lg' fw={600} lh='2rem'>
           {message.owner === 'assistant' ? 'Assistant' : 'You'}
         </Text>
-        <Text style={{ alignSelf: 'center', whiteSpace: 'pre-line' }}>
+        {/* <Text style={{ alignSelf: 'center', whiteSpace: 'pre-line' }}>
           {message.text}
-        </Text>
+        </Text> */}
+        <Markdown>{message.text}</Markdown>
       </div>
     </div>
   );

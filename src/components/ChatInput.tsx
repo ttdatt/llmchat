@@ -45,7 +45,6 @@ export const ChatInput = () => {
 
           if (e.key === 'Enter' && !keydown.includes('Shift')) {
             e.preventDefault();
-            console.log(e.key, e.code);
             sendMessage(e.currentTarget.value);
             if (textareaRef.current) textareaRef.current.value = '';
           }

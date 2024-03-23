@@ -8,15 +8,12 @@ import {
   storeMessage,
 } from './components/services/storage/storage';
 import { Message } from './types/Message';
-import { askOpenAi, initHttpClient } from './components/services/openai';
+import { askOpenAi } from './components/services/openai';
 
 export const useAppStore = create<AppState>()(
-  immer(set => ({
+  immer((set, get) => ({
     threads: [],
     init: async () => {
-      console.log(import.meta.env.VITE_OPENAI_KEY);
-
-      initHttpClient();
       const threads = await loadThreads();
       set(state => {
         state.threads = threads;
@@ -40,7 +37,7 @@ export const useAppStore = create<AppState>()(
       set(state => {
         state.currentThread = state.threads.find(x => x.id === thread.id);
       }),
-    sendMessage: message =>
+    sendMessage: message => {
       set(state => {
         if (state.currentThread) {
           const currentThreadId = state.currentThread.id;
@@ -54,14 +51,51 @@ export const useAppStore = create<AppState>()(
           state.currentThread = state.threads.find(
             x => x.id === currentThreadId
           );
-          storeMessage(currentThreadId, msg);
-          // askOpenAi();
+          storeMessage(get().currentThread?.id, msg);
         }
-      }),
+      });
+
+      const currentThread = get().currentThread;
+      if (currentThread) {
+        askOpenAi(message, currentThread);
+      }
+    },
     deleteThread: threadId =>
       set(state => {
         state.threads = state.threads.filter(x => x.id !== threadId);
         deleteThread(threadId);
       }),
+    streamMessages: async text => {
+      set(state => {
+        const currentThreadId = state.currentThread?.id;
+        const currentThread = state.threads.find(x => x.id === currentThreadId);
+        if (currentThread) {
+          let lastestMessage =
+            currentThread?.messages[currentThread.messages.length - 1];
+
+          if (lastestMessage?.owner === 'user') {
+            const msg: Message = {
+              id: uuidv4(),
+              owner: 'assistant',
+              text: '',
+              timestamp: new Date().toISOString(),
+            };
+            lastestMessage = msg;
+            currentThread.messages.push(lastestMessage);
+          }
+          lastestMessage.text += text;
+          state.currentThread = currentThread;
+        }
+      });
+    },
+    finishStreamingMessages: () => {
+      const currentThread = get().currentThread;
+      if (currentThread) {
+        const lastestMessage =
+          currentThread?.messages[currentThread.messages.length - 1];
+
+        storeMessage(currentThread.id, lastestMessage);
+      }
+    },
   }))
 );

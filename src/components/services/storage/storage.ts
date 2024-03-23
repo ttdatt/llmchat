@@ -7,14 +7,11 @@ const THREAD_IDS = 'threadIds';
 
 const storeMessage = async (threadId: string = uuidv4(), message: Message) => {
   const thread = (await store.get(threadId)) as Thread | null;
-  console.log('thread', thread);
 
   if (!thread) {
     const threadIds = (await store.get(THREAD_IDS)) as string[] | null;
-    console.log('threadIds', threadIds);
     if (threadIds) {
       const t = threadIds.find(x => x === threadId);
-      console.log('t', t);
 
       if (!t) await store.set(THREAD_IDS, threadIds.concat(threadId));
     } else {
@@ -30,14 +27,11 @@ const storeMessage = async (threadId: string = uuidv4(), message: Message) => {
     await store.set(threadId, thread);
   }
 
-  console.log('save pls');
-
   await store.save();
 };
 
 const loadThreads = async () => {
   const threadIds = (await store.get(THREAD_IDS)) as string[] | null;
-  console.log(threadIds);
 
   if (threadIds) {
     const threads = await Promise.all(

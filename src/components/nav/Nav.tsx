@@ -2,6 +2,7 @@ import { Button, Menu, ScrollArea, Stack, UnstyledButton } from '@mantine/core';
 import classes from './Nav.module.css';
 import { useAppStore } from '../../store';
 import { IconDots, IconTrash } from '@tabler/icons-react';
+// import { clearAll } from '../services/storage/storage';
 
 export function Navbar() {
   const threads = useAppStore(state => state.threads);
@@ -48,6 +49,7 @@ export function Navbar() {
     <ScrollArea className={classes.navbar}>
       <Stack>
         <Button onClick={() => createThread()}>New chat</Button>
+        {/* <Button onClick={() => clearAll()}>Clear all</Button> */}
       </Stack>
       <div className={classes.main}>{links}</div>
     </ScrollArea>
