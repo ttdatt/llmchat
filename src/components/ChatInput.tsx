@@ -1,55 +1,56 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Textarea } from '@mantine/core';
-import { storeMessage } from './services/storage/storage';
+import { useAppStore } from '../store';
 
 export const ChatInput = () => {
   const [keydown, setKeydown] = useState<string[]>([]);
-
-  console.log(keydown);
+  const sendMessage = useAppStore(state => state.sendMessage);
+  const textareaRef = React.useRef<HTMLTextAreaElement>(null);
 
   return (
-    <Textarea
-      autosize
-      autoComplete='off'
-      autoCorrect='off'
-      maxRows={6}
+    <div
       style={{
         position: 'sticky',
-        bottom: 10,
-        marginLeft: 10,
-        marginRight: 10,
-      }}
-      onKeyUp={e => {
-        if (
-          e.key.includes('Shift') ||
-          e.key.includes('Control') ||
-          e.key.includes('Alt') ||
-          e.key.includes('Meta')
-        )
-          setKeydown(x => {
-            if (x.includes(e.key)) return x.filter(y => y !== e.key);
-            return x;
-          });
-      }}
-      onKeyDown={async e => {
-        if (
-          e.key.includes('Shift') ||
-          e.key.includes('Control') ||
-          e.key.includes('Alt') ||
-          e.key.includes('Meta')
-        )
-          setKeydown(x => [...x, e.key]);
+        bottom: 0,
+        padding: 12,
+        paddingTop: 0,
+        backgroundColor: 'white',
+      }}>
+      <Textarea
+        ref={textareaRef}
+        autosize
+        autoComplete='off'
+        autoCorrect='off'
+        maxRows={6}
+        onKeyUp={e => {
+          if (
+            e.key.includes('Shift') ||
+            e.key.includes('Control') ||
+            e.key.includes('Alt') ||
+            e.key.includes('Meta')
+          )
+            setKeydown(x => {
+              if (x.includes(e.key)) return x.filter(y => y !== e.key);
+              return x;
+            });
+        }}
+        onKeyDown={async e => {
+          if (
+            e.key.includes('Shift') ||
+            e.key.includes('Control') ||
+            e.key.includes('Alt') ||
+            e.key.includes('Meta')
+          )
+            setKeydown(x => [...x, e.key]);
 
-        if (e.key === 'Enter' && !keydown.includes('Shift')) {
-          e.preventDefault();
-          console.log(e.key, e.code);
-          storeMessage('my-thread', {
-            owner: 'me',
-            text: e.currentTarget.value,
-            timestamp: new Date().toISOString(),
-          });
-        }
-      }}
-    />
+          if (e.key === 'Enter' && !keydown.includes('Shift')) {
+            e.preventDefault();
+            console.log(e.key, e.code);
+            sendMessage(e.currentTarget.value);
+            if (textareaRef.current) textareaRef.current.value = '';
+          }
+        }}
+      />
+    </div>
   );
 };

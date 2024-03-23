@@ -1,21 +1,67 @@
 import { Store } from 'tauri-plugin-store-api';
-import { Message } from '../../../types/Message';
+import { Message, Thread } from '../../../types/Message';
+import { v4 as uuidv4 } from 'uuid';
 
 const store = new Store('.settings.dat');
+const THREAD_IDS = 'threadIds';
 
-const storeMessage = async (
-  threadName: string = 'my-thread',
-  message: Message
-) => {
-  const thread = (await store.get(threadName)) as Message[] | null;
+const storeMessage = async (threadId: string = uuidv4(), message: Message) => {
+  const thread = (await store.get(threadId)) as Thread | null;
+  console.log('thread', thread);
+
   if (!thread) {
-    await store.set(threadName, [message]);
+    const threadIds = (await store.get(THREAD_IDS)) as string[] | null;
+    console.log('threadIds', threadIds);
+    if (threadIds) {
+      const t = threadIds.find(x => x === threadId);
+      console.log('t', t);
+
+      if (!t) await store.set(THREAD_IDS, threadIds.concat(threadId));
+    } else {
+      await store.set(THREAD_IDS, [threadId]);
+    }
+    await store.set(threadId, {
+      id: threadId,
+      title: 'New Thread',
+      messages: [message],
+    });
   } else {
-    thread.push(message);
-    await store.set(threadName, thread);
+    thread.messages.push(message);
+    await store.set(threadId, thread);
   }
+
+  console.log('save pls');
 
   await store.save();
 };
 
-export { storeMessage };
+const loadThreads = async () => {
+  const threadIds = (await store.get(THREAD_IDS)) as string[] | null;
+  console.log(threadIds);
+
+  if (threadIds) {
+    const threads = await Promise.all(
+      threadIds.map(async x => (await store.get(x)) as Thread)
+    );
+    return threads;
+  }
+  return [];
+};
+
+const deleteThread = async (threadId: string) => {
+  const threadIds = (await store.get(THREAD_IDS)) as string[] | null;
+  if (threadIds) {
+    await store.set(
+      THREAD_IDS,
+      threadIds.filter(x => x !== threadId)
+    );
+    await store.delete(threadId);
+    await store.save();
+  }
+};
+
+const clearAll = async () => {
+  await store.clear();
+};
+
+export { storeMessage, loadThreads, clearAll, deleteThread };

@@ -15,6 +15,12 @@
       "shell": {
         "all": false,
         "open": true
+      },
+      "http": {
+        "all": true,
+        "scope": [
+          "https://api.openai.com/v1/chat/completions"
+        ]
       }
     },
     "windows": [
