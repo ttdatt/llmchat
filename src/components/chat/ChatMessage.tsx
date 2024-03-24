@@ -4,7 +4,8 @@ import { GptIcon } from '../../assets/gpt';
 import { IconUserFilled } from '@tabler/icons-react';
 import Markdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import './ChatMessage.css';
 
 type ChatMessageProps = {
   message: Message;
@@ -29,6 +30,8 @@ export const ChatMessage = ({ message }: ChatMessageProps) => {
     );
   };
 
+  console.log('message', message);
+
   return (
     <div
       style={{
@@ -48,29 +51,53 @@ export const ChatMessage = ({ message }: ChatMessageProps) => {
           {message.owner === 'assistant' ? 'Assistant' : 'You'}
         </Text>
         <Markdown
+          className='chatdiv'
+          children={message.text}
           components={{
             code: props => {
               const { children, className, node, ref, ...rest } = props;
-              const match = /language-(\w+)/.exec(className || '');
-              console.log('match', { match, className, children });
+              console.log('code', {
+                children,
+                className,
+                node,
+                ref,
+                rest,
+              });
 
-              return (
-                <SyntaxHighlighter
-                  {...rest}
-                  PreTag='div'
-                  children={String(children).replace(/\n$/, '')}
-                  language={match?.[1] ?? 'plaintext'}
-                  customStyle={{
-                    backgroundColor: 'black',
-                    borderRadius: 8,
-                  }}
-                  style={vscDarkPlus}
-                />
-              );
+              const match = /language-(\w+)/.exec(className || '');
+
+              if (node?.position?.start.line === node?.position?.end.line) {
+                return (
+                  <span
+                    style={{
+                      fontWeight: 'bold',
+                      color: 'black',
+                    }}>
+                    `{children}`
+                  </span>
+                );
+              } else
+                return (
+                  <SyntaxHighlighter
+                    {...rest}
+                    children={String(children)}
+                    language={match?.[1] ?? 'plaintext'}
+                    customStyle={{
+                      backgroundColor: 'black',
+                      borderRadius: 4,
+                    }}
+                    codeTagProps={{
+                      style: {
+                        background: 'black',
+                        fontSize: '14px',
+                      },
+                    }}
+                    style={oneDark}
+                  />
+                );
             },
-          }}>
-          {message.text}
-        </Markdown>
+          }}
+        />
       </div>
     </div>
   );

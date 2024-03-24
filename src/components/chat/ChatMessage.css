@@ -1,0 +1,8 @@
+.chatdiv h1,
+.chatdiv h2,
+.chatdiv h3,
+.chatdiv h4,
+.chatdiv p {
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
