@@ -9,92 +9,97 @@ import {
 } from './components/services/storage/storage';
 import { Message } from './types/Message';
 import { askOpenAi } from './components/services/openai';
+import maxby from 'lodash/maxBy';
 
 export const useAppStore = create<AppState>()(
   immer((set, get) => ({
-    threads: [],
+    threads: {},
     init: async () => {
       const threads = await loadThreads();
-      set(state => {
+      return set(state => {
         state.threads = threads;
       });
     },
     createNewThread: () => {
-      set(state => {
-        if (!state.currentThread || state.currentThread.messages.length > 0) {
+      return set(state => {
+        const currentThread = state.threads[state.currentThreadId ?? ''];
+        if (!currentThread || Object.keys(currentThread.messages).length > 0) {
           const newThread = {
             id: uuidv4(),
             title: 'New Thread',
-            messages: [],
+            messages: {},
           };
 
-          state.threads.push(newThread);
-          state.currentThread = newThread;
+          state.threads[newThread.id] = newThread;
+          state.currentThreadId = newThread.id;
         }
       });
     },
     setCurrentThread: thread =>
       set(state => {
-        state.currentThread = state.threads.find(x => x.id === thread.id);
+        state.currentThreadId = thread.id;
       }),
     sendMessage: message => {
-      set(state => {
-        if (state.currentThread) {
-          const currentThreadId = state.currentThread.id;
+      return set(state => {
+        const currentThread = get().threads[get().currentThreadId ?? ''];
+        if (currentThread) {
+          askOpenAi(message, currentThread);
+        }
+
+        if (state.currentThreadId) {
           const msg: Message = {
             id: uuidv4(),
             owner: 'user',
             text: message,
             timestamp: new Date().toISOString(),
           };
-          state.threads.find(x => x.id === currentThreadId)?.messages.push(msg);
-          state.currentThread = state.threads.find(
-            x => x.id === currentThreadId
-          );
-          storeMessage(get().currentThread?.id, msg);
+          state.threads[state.currentThreadId].messages[msg.id] = msg;
+          storeMessage(state.currentThreadId, msg);
         }
       });
-
-      const currentThread = get().currentThread;
-      if (currentThread) {
-        askOpenAi(message, currentThread);
-      }
     },
     deleteThread: threadId =>
       set(state => {
-        state.threads = state.threads.filter(x => x.id !== threadId);
+        delete state.threads[threadId];
         deleteThread(threadId);
       }),
-    streamMessages: async text => {
+    streamMessages: text => {
       set(state => {
-        const currentThreadId = state.currentThread?.id;
-        const currentThread = state.threads.find(x => x.id === currentThreadId);
-        if (currentThread) {
-          let lastestMessage =
-            currentThread?.messages[currentThread.messages.length - 1];
+        const currentThreadId = state.currentThreadId;
+        const currentThread = state.threads[currentThreadId ?? ''];
+        if (!currentThread || !currentThreadId) return;
 
-          if (lastestMessage?.owner === 'user') {
-            const msg: Message = {
-              id: uuidv4(),
-              owner: 'assistant',
-              text: '',
-              timestamp: new Date().toISOString(),
-            };
-            lastestMessage = msg;
-            currentThread.messages.push(lastestMessage);
-          }
+        let lastestMessage = maxby(
+          Object.values(currentThread.messages),
+          'timestamp'
+        );
+
+        if (!lastestMessage) return;
+
+        if (lastestMessage.owner === 'user') {
+          const msg: Message = {
+            id: uuidv4(),
+            owner: 'assistant',
+            text: text,
+            timestamp: new Date().toISOString(),
+          };
+
+          state.threads[currentThreadId].messages[msg.id] = msg;
+          state.threads[currentThreadId].messages[msg.id].text += text;
+        } else {
           lastestMessage.text += text;
-          state.currentThread = currentThread;
         }
       });
     },
     finishStreamingMessages: () => {
-      const currentThread = get().currentThread;
+      const currentThreadId = get().currentThreadId;
+      const currentThread = get().threads[currentThreadId ?? ''];
       if (currentThread) {
-        const lastestMessage =
-          currentThread?.messages[currentThread.messages.length - 1];
-
-        storeMessage(currentThread.id, lastestMessage);
+        const lastestMessage = maxby(
+          Object.values(currentThread.messages),
+          'timestamp'
+        );
+        if (lastestMessage) storeMessage(currentThread.id, lastestMessage);
       }
     },
   }))

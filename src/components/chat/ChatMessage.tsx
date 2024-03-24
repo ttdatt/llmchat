@@ -6,13 +6,17 @@ import Markdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import './ChatMessage.css';
+import { memo } from 'react';
 
 type ChatMessageProps = {
-  message: Message;
+  text: Message['text'];
+  owner: Message['owner'];
 };
-export const ChatMessage = ({ message }: ChatMessageProps) => {
+export const ChatMessage = memo(({ text, owner }: ChatMessageProps) => {
+  console.log('ChatMessage', text, owner);
+
   const renderIcon = () => {
-    if (message.owner === 'assistant') {
+    if (owner === 'assistant') {
       return <GptIcon iconStyle={{ fill: 'white' }} />;
     }
     return (
@@ -30,8 +34,6 @@ export const ChatMessage = ({ message }: ChatMessageProps) => {
     );
   };
 
-  console.log('message', message);
-
   return (
     <div
       style={{
@@ -48,21 +50,14 @@ export const ChatMessage = ({ message }: ChatMessageProps) => {
           overflowX: 'scroll',
         }}>
         <Text size='lg' fw={600} lh='2rem'>
-          {message.owner === 'assistant' ? 'Assistant' : 'You'}
+          {owner === 'assistant' ? 'Assistant' : 'You'}
         </Text>
         <Markdown
           className='chatdiv'
-          children={message.text}
+          children={text}
           components={{
             code: props => {
               const { children, className, node, ref, ...rest } = props;
-              console.log('code', {
-                children,
-                className,
-                node,
-                ref,
-                rest,
-              });
 
               const match = /language-(\w+)/.exec(className || '');
 
@@ -101,4 +96,4 @@ export const ChatMessage = ({ message }: ChatMessageProps) => {
       </div>
     </div>
   );
-};
+});

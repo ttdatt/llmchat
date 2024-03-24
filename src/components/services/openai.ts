@@ -1,14 +1,33 @@
 import OpenAI from 'openai';
 import { useAppStore } from '../../store';
 import { Thread } from '../../types/Message';
+// import fileText from '../../assets/msg.txt';
+// import codeText from '../../assets/code.txt';
 
 const openai = new OpenAI({
   apiKey: import.meta.env.VITE_OPENAI_KEY,
   dangerouslyAllowBrowser: true,
 });
 
-const askOpenAi = async (question: string, thread: Thread) => {
-  if (!question) return;
+// const STEP = 10;
+// let offset = 0;
+
+const askOpenAi = async (question: string, thread?: Thread) => {
+  // const r = await fetch(codeText);
+  // const text = await r.text();
+
+  // let inte = setInterval(() => {
+  //   useAppStore.getState().streamMessages(text.slice(offset, offset + STEP));
+  //   offset += STEP;
+  //   if (offset >= text.length) {
+  //     clearInterval(inte);
+  //     offset = 0;
+  //     // useAppStore.getState().finishStreamingMessages();
+  //   }
+  // }, 100);
+  // return;
+
+  if (!question || !thread) return;
 
   const stream = await openai.chat.completions.create({
     model: 'gpt-4-turbo-preview',
@@ -19,7 +38,7 @@ const askOpenAi = async (question: string, thread: Thread) => {
         content:
           "Your response should be concise, logical and to the point. Don't give your opinion.",
       },
-      ...thread.messages.map(x => ({
+      ...Object.values(thread.messages).map(x => ({
         role: x.owner,
         content: x.text,
       })),

@@ -8,13 +8,13 @@ export function Navbar() {
   const threads = useAppStore(state => state.threads);
   const createThread = useAppStore(state => state.createNewThread);
   const setCurrentThread = useAppStore(state => state.setCurrentThread);
-  const currentThread = useAppStore(state => state.currentThread);
+  const currentThreadId = useAppStore(state => state.currentThreadId);
   const deleteThread = useAppStore(state => state.deleteThread);
 
-  const links = threads.map(t => (
+  const links = Object.values(threads).map(t => (
     <div
       className={classes.link}
-      data-active={currentThread?.id === t.id || undefined}
+      data-active={currentThreadId === t.id || undefined}
       onClick={async event => {
         event.preventDefault();
         setCurrentThread(t);

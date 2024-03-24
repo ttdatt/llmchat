@@ -6,7 +6,7 @@ const store = new Store('.settings.dat');
 const THREAD_IDS = 'threadIds';
 
 const storeMessage = async (threadId: string = uuidv4(), message: Message) => {
-  const thread = (await store.get(threadId)) as Thread | null;
+  let thread = (await store.get(threadId)) as Thread | null;
 
   if (!thread) {
     const threadIds = (await store.get(THREAD_IDS)) as string[] | null;
@@ -20,10 +20,10 @@ const storeMessage = async (threadId: string = uuidv4(), message: Message) => {
     await store.set(threadId, {
       id: threadId,
       title: 'New Thread',
-      messages: [message],
+      messages: { [message.id]: message },
     });
   } else {
-    thread.messages.push(message);
+    thread.messages[message.id] = message;
     await store.set(threadId, thread);
   }
 
@@ -37,9 +37,15 @@ const loadThreads = async () => {
     const threads = await Promise.all(
       threadIds.map(async x => (await store.get(x)) as Thread)
     );
-    return threads;
+
+    const threadsMap: Record<string, Thread> = {};
+    for (const thread of threads) {
+      threadsMap[thread.id] = thread;
+    }
+
+    return threadsMap;
   }
-  return [];
+  return {} as Record<string, Thread>;
 };
 
 const deleteThread = async (threadId: string) => {

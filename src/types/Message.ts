@@ -1,7 +1,7 @@
 export type Thread = {
   id: string;
   title: string;
-  messages: Message[];
+  messages: Record<string, Message>;
 };
 
 export type Message = {

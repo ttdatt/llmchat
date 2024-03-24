@@ -1,8 +1,8 @@
 import { Thread } from './Message';
 
 export type AppState = {
-  currentThread?: Thread;
-  threads: Thread[];
+  currentThreadId?: string;
+  threads: Record<string, Thread>;
   init: () => void;
   createNewThread: () => void;
   setCurrentThread: (thread: Thread) => void;
