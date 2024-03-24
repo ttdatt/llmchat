@@ -1,17 +1,30 @@
-import { ScrollArea } from '@mantine/core';
 import { ChatMessage } from './chat/ChatMessage';
 import { useAppStore } from '../store';
-import { useRef } from 'react';
+import { ChatInput } from './ChatInput';
 
 export const MessageArea = () => {
   const currentThread = useAppStore(state => state.currentThread);
-  const scrollRef = useRef<HTMLDivElement>(null);
+
+  if (!currentThread) return null;
 
   return (
-    <ScrollArea ref={scrollRef} h='100vh'>
-      {currentThread?.messages.map(x => {
-        return <ChatMessage key={x.id} message={x} />;
-      })}
-    </ScrollArea>
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        overflow: 'scroll',
+        overscrollBehavior: 'none',
+        width: '100%',
+      }}>
+      <div
+        style={{
+          flex: 1,
+        }}>
+        {currentThread?.messages.map(x => {
+          return <ChatMessage key={x.id} message={x} />;
+        })}
+      </div>
+      <ChatInput />
+    </div>
   );
 };

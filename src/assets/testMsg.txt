@@ -1,2 +1,0 @@
-To center text in a div, use CSS with `text-align: center;` on the div. Example:  
-```css div { text-align: center; } ```

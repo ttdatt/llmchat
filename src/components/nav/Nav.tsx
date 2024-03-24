@@ -1,4 +1,4 @@
-import { Button, Menu, ScrollArea, Stack, UnstyledButton } from '@mantine/core';
+import { Button, Menu, Stack, UnstyledButton } from '@mantine/core';
 import classes from './Nav.module.css';
 import { useAppStore } from '../../store';
 import { IconDots, IconTrash } from '@tabler/icons-react';
@@ -24,6 +24,7 @@ export function Navbar() {
       <Menu shadow='md' width={'auto'}>
         <Menu.Target>
           <UnstyledButton
+            onClick={e => e.stopPropagation()}
             style={{
               display: 'flex',
               height: '100%',
@@ -46,12 +47,12 @@ export function Navbar() {
   ));
 
   return (
-    <ScrollArea className={classes.navbar}>
+    <div className={classes.navbar}>
       <Stack>
         <Button onClick={() => createThread()}>New chat</Button>
         {/* <Button onClick={() => clearAll()}>Clear all</Button> */}
       </Stack>
       <div className={classes.main}>{links}</div>
-    </ScrollArea>
+    </div>
   );
 }
