@@ -12,10 +12,12 @@ const askOpenAi = async (question: string, thread: Thread) => {
 
   const stream = await openai.chat.completions.create({
     model: 'gpt-4-turbo-preview',
+    temperature: 0.5,
     messages: [
       {
         role: 'system',
-        content: 'Do not answer too long. Less than 50 words',
+        content:
+          "Your response should be concise, logical and to the point. Don't give your opinion.",
       },
       ...thread.messages.map(x => ({
         role: x.owner,
