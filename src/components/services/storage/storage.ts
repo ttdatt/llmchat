@@ -1,4 +1,4 @@
-import { Store } from 'tauri-plugin-store-api';
+import { Store } from '@tauri-apps/plugin-store';
 import { Message, Thread } from '../../../types/Message';
 
 const store = new Store('.settings.dat');

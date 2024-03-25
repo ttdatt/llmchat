@@ -20,6 +20,7 @@
 	},
 	"javascript": {
 		"formatter": {
+			"indentStyle": "tab",
 			"jsxQuoteStyle": "single",
 			"quoteStyle": "single",
 			"bracketSameLine": true

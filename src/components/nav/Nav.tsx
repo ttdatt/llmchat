@@ -10,7 +10,7 @@ export function Navbar() {
 	const createThread = useAppStore((state) => state.createNewThread);
 
 	const links = Object.values(threads).map((t) => (
-		<NavItem thread={t} currentThreadId={currentThreadId} />
+		<NavItem key={t.id} thread={t} currentThreadId={currentThreadId} />
 	));
 
 	return (

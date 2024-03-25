@@ -1,49 +1,34 @@
 {
+  "productName": "llmassist",
+  "version": "0.0.0",
+  "identifier": "com.tauri.dev",
   "build": {
     "beforeDevCommand": "bun run dev",
+    "devUrl": "http://localhost:1420",
     "beforeBuildCommand": "bun run build",
-    "devPath": "http://localhost:1420",
-    "distDir": "../dist"
+    "frontendDist": "../dist"
   },
-  "package": {
-    "productName": "llmchat",
-    "version": "0.0.0"
-  },
-  "tauri": {
-    "allowlist": {
-      "all": false,
-      "shell": {
-        "all": false,
-        "open": true
-      },
-      "http": {
-        "all": true,
-        "scope": [
-          "https://api.openai.com/v1/chat/completions"
-        ]
-      }
-    },
+  "app": {
     "windows": [
       {
-        "title": "llmchat",
+        "title": "llmassist",
         "width": 800,
         "height": 600
       }
     ],
     "security": {
       "csp": null
-    },
-    "bundle": {
-      "active": true,
-      "targets": "all",
-      "identifier": "com.dat.llmchat",
-      "icon": [
-        "icons/32x32.png",
-        "icons/128x128.png",
-        "icons/128x128@2x.png",
-        "icons/icon.icns",
-        "icons/icon.ico"
-      ]
     }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ]
   }
 }

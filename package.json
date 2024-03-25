@@ -1,5 +1,5 @@
 {
-	"name": "llmchat",
+	"name": "llmassist",
 	"private": true,
 	"version": "0.0.0",
 	"type": "module",
@@ -13,8 +13,9 @@
 		"@mantine/core": "^7.6.2",
 		"@mantine/hooks": "^7.6.2",
 		"@tabler/icons-react": "^3.1.0",
-		"@tauri-apps/api": "^1",
-		"@types/react-syntax-highlighter": "^15.5.11",
+		"@tauri-apps/api": ">=2.0.0-beta.6",
+		"@tauri-apps/plugin-shell": ">=2.0.0-beta.2",
+		"@tauri-apps/plugin-store": "^2.0.0-beta.2",
 		"immer": "^10.0.4",
 		"lodash": "^4.17.21",
 		"openai": "^4.29.2",
@@ -22,23 +23,22 @@
 		"react-dom": "^18.2.0",
 		"react-markdown": "^9.0.1",
 		"react-syntax-highlighter": "^15.5.0",
-		"rehype-highlight": "^7.0.0",
-		"tauri-plugin-store-api": "https://github.com/tauri-apps/tauri-plugin-store#v1",
 		"uuid": "^9.0.1",
 		"zustand": "^4.5.2"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.6.2",
-		"@tauri-apps/cli": "^1",
+		"@tauri-apps/cli": ">=2.0.0-beta.0",
 		"@types/lodash": "^4.17.0",
 		"@types/react": "^18.2.15",
 		"@types/react-dom": "^18.2.7",
 		"@types/uuid": "^9.0.8",
 		"@vitejs/plugin-react": "^4.2.1",
-		"postcss": "^8.4.36",
+		"internal-ip": "^7.0.0",
+		"postcss": "^8.4.38",
 		"postcss-preset-mantine": "^1.13.0",
 		"postcss-simple-vars": "^7.0.1",
-		"typescript": "5.4.2",
+		"typescript": "^5.0.2",
 		"vite": "^5.0.0"
 	}
 }
