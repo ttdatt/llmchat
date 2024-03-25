@@ -1,7 +1,7 @@
 {
-  "productName": "llmassist",
+  "productName": "llmchat",
   "version": "0.0.0",
-  "identifier": "com.tauri.dev",
+  "identifier": "com.dat.llmchat",
   "build": {
     "beforeDevCommand": "bun run dev",
     "devUrl": "http://localhost:1420",
@@ -11,7 +11,7 @@
   "app": {
     "windows": [
       {
-        "title": "llmassist",
+        "title": "llmchat",
         "width": 800,
         "height": 600
       }
