@@ -1,67 +1,66 @@
 import { Store } from 'tauri-plugin-store-api';
 import { Message, Thread } from '../../../types/Message';
-import { v4 as uuidv4 } from 'uuid';
 
 const store = new Store('.settings.dat');
 const THREAD_IDS = 'threadIds';
 
-const storeMessage = async (threadId: string = uuidv4(), message: Message) => {
-  let thread = (await store.get(threadId)) as Thread | null;
+const storeMessage = async (threadId: string, message: Message) => {
+	const thread = (await store.get(threadId)) as Thread | null;
 
-  if (!thread) {
-    const threadIds = (await store.get(THREAD_IDS)) as string[] | null;
-    if (threadIds) {
-      const t = threadIds.find(x => x === threadId);
+	if (!thread) {
+		const threadIds = (await store.get(THREAD_IDS)) as string[] | null;
+		if (threadIds) {
+			const t = threadIds.find((x) => x === threadId);
 
-      if (!t) await store.set(THREAD_IDS, threadIds.concat(threadId));
-    } else {
-      await store.set(THREAD_IDS, [threadId]);
-    }
-    await store.set(threadId, {
-      id: threadId,
-      title: 'New Thread',
-      messages: { [message.id]: message },
-    });
-  } else {
-    thread.messages[message.id] = message;
-    await store.set(threadId, thread);
-  }
+			if (!t) await store.set(THREAD_IDS, threadIds.concat(threadId));
+		} else {
+			await store.set(THREAD_IDS, [threadId]);
+		}
+		await store.set(threadId, {
+			id: threadId,
+			title: 'New Thread',
+			messages: { [message.id]: message },
+		});
+	} else {
+		thread.messages[message.id] = message;
+		await store.set(threadId, thread);
+	}
 
-  await store.save();
+	await store.save();
 };
 
 const loadThreads = async () => {
-  const threadIds = (await store.get(THREAD_IDS)) as string[] | null;
+	const threadIds = (await store.get(THREAD_IDS)) as string[] | null;
 
-  if (threadIds) {
-    const threads = await Promise.all(
-      threadIds.map(async x => (await store.get(x)) as Thread)
-    );
+	if (threadIds) {
+		const threads = await Promise.all(
+			threadIds.map(async (x) => (await store.get(x)) as Thread),
+		);
 
-    const threadsMap: Record<string, Thread> = {};
-    for (const thread of threads) {
-      threadsMap[thread.id] = thread;
-    }
+		const threadsMap: Record<string, Thread> = {};
+		for (const thread of threads) {
+			threadsMap[thread.id] = thread;
+		}
 
-    return threadsMap;
-  }
-  return {} as Record<string, Thread>;
+		return threadsMap;
+	}
+	return {} as Record<string, Thread>;
 };
 
 const deleteThread = async (threadId: string) => {
-  const threadIds = (await store.get(THREAD_IDS)) as string[] | null;
-  if (threadIds) {
-    await store.set(
-      THREAD_IDS,
-      threadIds.filter(x => x !== threadId)
-    );
-    await store.delete(threadId);
-    await store.save();
-  }
+	const threadIds = (await store.get(THREAD_IDS)) as string[] | null;
+	if (threadIds) {
+		await store.set(
+			THREAD_IDS,
+			threadIds.filter((x) => x !== threadId),
+		);
+		await store.delete(threadId);
+		await store.save();
+	}
 };
 
 const clearAll = async () => {
-  await store.clear();
+	await store.clear();
 };
 
 export { storeMessage, loadThreads, clearAll, deleteThread };
