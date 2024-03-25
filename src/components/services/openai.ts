@@ -22,9 +22,9 @@ const askOpenAi = async (question: string, thread?: Thread) => {
   //   if (offset >= text.length) {
   //     clearInterval(inte);
   //     offset = 0;
-  //     // useAppStore.getState().finishStreamingMessages();
+  //     useAppStore.getState().finishStreamingMessages(false);
   //   }
-  // }, 100);
+  // }, 20);
   // return;
 
   if (!question || !thread) return;

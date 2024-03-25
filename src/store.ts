@@ -14,6 +14,7 @@ import maxby from 'lodash/maxBy';
 export const useAppStore = create<AppState>()(
   immer((set, get) => ({
     threads: {},
+    isStreaming: false,
     init: async () => {
       const threads = await loadThreads();
       return set(state => {
@@ -65,6 +66,7 @@ export const useAppStore = create<AppState>()(
       }),
     streamMessages: text => {
       set(state => {
+        state.isStreaming = true;
         const currentThreadId = state.currentThreadId;
         const currentThread = state.threads[currentThreadId ?? ''];
         if (!currentThread || !currentThreadId) return;
@@ -91,7 +93,10 @@ export const useAppStore = create<AppState>()(
         }
       });
     },
-    finishStreamingMessages: () => {
+    finishStreamingMessages: (save = true) => {
+      set(() => ({ isStreaming: false }));
+      if (!save) return;
+
       const currentThreadId = get().currentThreadId;
       const currentThread = get().threads[currentThreadId ?? ''];
       if (currentThread) {

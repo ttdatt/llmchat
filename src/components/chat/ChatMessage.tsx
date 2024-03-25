@@ -6,16 +6,14 @@ import Markdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import './ChatMessage.css';
-import { memo } from 'react';
+import { memo, useMemo } from 'react';
 
 type ChatMessageProps = {
   text: Message['text'];
   owner: Message['owner'];
 };
 export const ChatMessage = memo(({ text, owner }: ChatMessageProps) => {
-  console.log('ChatMessage', text, owner);
-
-  const renderIcon = () => {
+  const Icon = useMemo(() => {
     if (owner === 'assistant') {
       return <GptIcon iconStyle={{ fill: 'white' }} />;
     }
@@ -32,7 +30,7 @@ export const ChatMessage = memo(({ text, owner }: ChatMessageProps) => {
         <IconUserFilled style={{ fill: 'white' }} />
       </div>
     );
-  };
+  }, [owner]);
 
   return (
     <div
@@ -42,7 +40,7 @@ export const ChatMessage = memo(({ text, owner }: ChatMessageProps) => {
         gap: 8,
         padding: 10,
       }}>
-      {renderIcon()}
+      {Icon}
       <div
         style={{
           display: 'flex',

@@ -21,11 +21,7 @@ export const MessageArea = () => {
         width: '100%',
         scrollSnapType: 'y proximity',
       }}>
-      <div
-        id='scroller'
-        style={{
-          flex: 1,
-        }}>
+      <div style={{ flex: 1 }}>
         {Object.values(currentThread.messages).map(x => {
           return <ChatMessage key={x.id} text={x.text} owner={x.owner} />;
         })}
