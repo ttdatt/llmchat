@@ -1,7 +1,10 @@
 .container {
-  overflow-y: scroll;
-  overscroll-behavior-y: contain;
-  scroll-snap-type: y mandatory;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  overflow: scroll;
+  overscroll-behavior: none;
+  scroll-snap-type: y proximity;
 }
 
 .container > div > div:last-child {

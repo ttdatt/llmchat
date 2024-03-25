@@ -11,16 +11,7 @@ export const MessageArea = () => {
 	if (!currentThread) return null;
 
 	return (
-		<div
-			className='container'
-			style={{
-				display: 'flex',
-				flexDirection: 'column',
-				overflow: 'scroll',
-				overscrollBehavior: 'none',
-				width: '100%',
-				scrollSnapType: 'y proximity',
-			}}>
+		<div className='container'>
 			<div style={{ flex: 1 }}>
 				{Object.values(currentThread.messages).map((x) => {
 					return <ChatMessage key={x.id} text={x.text} owner={x.owner} />;
