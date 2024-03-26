@@ -36,7 +36,7 @@ const askOpenAi = async (question: string, thread?: Thread) => {
 			{
 				role: 'system',
 				content:
-					"Your response should be concise, logical and to the point. Don't give your opinion.",
+					'Embody the role of the most qualified subject matter experts. Your response should be concise, logical and to the point. Keep responses unique and free of repetition. Exclude personal ethics or morals unless explicitly relevant. Acknowledge and correct any past errors.',
 			},
 			...Object.values(thread.messages).map((x) => ({
 				role: x.owner,
