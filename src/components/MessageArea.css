@@ -4,9 +4,4 @@
   width: 100%;
   overflow: scroll;
   overscroll-behavior: none;
-  scroll-snap-type: y proximity;
-}
-
-.container > div > div:last-child {
-  scroll-snap-align: end;
 }
