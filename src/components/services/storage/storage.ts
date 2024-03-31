@@ -1,16 +1,17 @@
 import { Store } from '@tauri-apps/plugin-store';
 import { Message, Thread } from '../../../types/Message';
 
-const store = new Store('.settings.dat');
+const store = new Store('data.dat');
+const settingStore = new Store('settings.dat');
 const THREAD_IDS = 'threadIds';
 
 const saveToken = async (token: string) => {
-	await store.set('llmToken', token);
-	await store.save();
+	await settingStore.set('llmToken', token);
+	await settingStore.save();
 };
 
 const getToken = async () => {
-	return (await store.get('llmToken')) as string;
+	return (await settingStore.get('llmToken')) as string;
 };
 
 const storeMessage = async (threadId: string, message: Message) => {
