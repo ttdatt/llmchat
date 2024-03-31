@@ -1,0 +1,30 @@
+.chatdiv h1,
+.chatdiv h2,
+.chatdiv h3,
+.chatdiv h4,
+.chatdiv p {
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+.iconContainer {
+  min-width: 2rem;
+  width: 2rem;
+  height: 2rem;
+  background-color: pink;
+  padding: 4px;
+  border-radius: 50%;
+}
+
+.chatContainer {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+  padding: 1rem;
+}
+
+.chatTextDiv {
+  display: flex;
+  flex-direction: column;
+  overflow-x: scroll;
+}

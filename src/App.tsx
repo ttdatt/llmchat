@@ -3,6 +3,7 @@ import { Navbar } from './components/nav/Nav';
 import { MessageArea } from './components/MessageArea';
 import { useAppStore } from './store';
 import { useEffect } from 'react';
+import { Settings } from './components/settings/Settings';
 
 const MainPage = () => {
 	return (
@@ -15,6 +16,7 @@ const MainPage = () => {
 			}}>
 			<Navbar />
 			<MessageArea />
+			<Settings />
 		</div>
 	);
 };

@@ -3,21 +3,35 @@ import { immer } from 'zustand/middleware/immer';
 import { AppState } from './types/AppState';
 import { v4 as uuidv4 } from 'uuid';
 import {
+	clearAll,
 	deleteThread,
+	getToken,
 	loadThreads,
+	saveToken,
 	storeMessage,
 } from './components/services/storage/storage';
 import { Message } from './types/Message';
-import { askOpenAi } from './components/services/openai';
+import { askOpenAi, init as initOpenAI } from './components/services/openai';
 import maxby from 'lodash/maxBy';
+import { decrypt, encrypt } from './utils/crypto';
 
 export const useAppStore = create<AppState>()(
 	immer((set, get) => ({
 		threads: {},
 		isStreaming: false,
+		modalVisible: false,
+		llmToken: '',
 		init: async () => {
+			try {
+				const encryptedToken = await getToken();
+				const token = await decrypt(encryptedToken);
+				initOpenAI(token);
+				set(() => ({ llmToken: token }));
+			} catch (error) {
+				console.error(error);
+			}
 			const threads = await loadThreads();
-			return set((state) => {
+			set((state) => {
 				state.threads = threads;
 			});
 		},
@@ -106,6 +120,16 @@ export const useAppStore = create<AppState>()(
 				);
 				if (lastestMessage) storeMessage(currentThread.id, lastestMessage);
 			}
+		},
+		toggleModal: () => set((state) => ({ modalVisible: !state.modalVisible })),
+		setLlmToken: async (token) => {
+			const encryptedToken = await encrypt(token);
+			saveToken(encryptedToken);
+			set(() => ({ llmToken: token }));
+		},
+		deleteAllThreads: () => {
+			set(() => ({ threads: {} }));
+			clearAll();
 		},
 	})),
 );

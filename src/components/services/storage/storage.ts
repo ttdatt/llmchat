@@ -4,6 +4,15 @@ import { Message, Thread } from '../../../types/Message';
 const store = new Store('.settings.dat');
 const THREAD_IDS = 'threadIds';
 
+const saveToken = async (token: string) => {
+	await store.set('llmToken', token);
+	await store.save();
+};
+
+const getToken = async () => {
+	return (await store.get('llmToken')) as string;
+};
+
 const storeMessage = async (threadId: string, message: Message) => {
 	const thread = (await store.get(threadId)) as Thread | null;
 
@@ -63,4 +72,11 @@ const clearAll = async () => {
 	await store.clear();
 };
 
-export { storeMessage, loadThreads, clearAll, deleteThread };
+export {
+	storeMessage,
+	loadThreads,
+	clearAll,
+	deleteThread,
+	saveToken,
+	getToken,
+};

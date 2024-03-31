@@ -3,9 +3,9 @@
   "version": "0.0.0",
   "identifier": "com.dat.llmchat",
   "build": {
-    "beforeDevCommand": "yarn dev",
+    "beforeDevCommand": "bun run dev",
     "devUrl": "http://localhost:1420",
-    "beforeBuildCommand": "yarn build",
+    "beforeBuildCommand": "bun run build",
     "frontendDist": "../dist"
   },
   "app": {

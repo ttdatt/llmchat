@@ -4,30 +4,43 @@ import { Thread } from '../../types/Message';
 // import fileText from '../../assets/msg.txt';
 // import codeText from '../../assets/code.txt';
 
-const openai = new OpenAI({
-	apiKey: import.meta.env.VITE_OPENAI_KEY,
-	dangerouslyAllowBrowser: true,
-});
+let openai: undefined | OpenAI;
 
-// const STEP = 10;
-// let offset = 0;
+const init = (token: string) => {
+	openai = new OpenAI({
+		apiKey: token,
+		dangerouslyAllowBrowser: true,
+	});
+	useAppStore.subscribe((state, prev) => {
+		if (state.llmToken !== prev.llmToken) {
+			if (openai) openai.apiKey = state.llmToken;
+			else
+				openai = new OpenAI({
+					apiKey: state.llmToken,
+					dangerouslyAllowBrowser: true,
+				});
+		}
+	});
+};
 
 const askOpenAi = async (question: string, thread?: Thread) => {
+	// const STEP = 10;
+	// let offset = 0;
 	// const r = await fetch(codeText);
 	// const text = await r.text();
 
-	// let inte = setInterval(() => {
-	//   useAppStore.getState().streamMessages(text.slice(offset, offset + STEP));
-	//   offset += STEP;
-	//   if (offset >= text.length) {
-	//     clearInterval(inte);
-	//     offset = 0;
-	//     useAppStore.getState().finishStreamingMessages(false);
-	//   }
-	// }, 20);
+	// const inte = setInterval(() => {
+	// 	useAppStore.getState().streamMessages(text.slice(offset, offset + STEP));
+	// 	offset += STEP;
+	// 	if (offset >= text.length) {
+	// 		clearInterval(inte);
+	// 		offset = 0;
+	// 		useAppStore.getState().finishStreamingMessages(false);
+	// 	}
+	// }, 100);
 	// return;
 
-	if (!question || !thread) return;
+	if (!question || !thread || !openai) return;
 
 	const stream = await openai.chat.completions.create({
 		model: 'gpt-4-turbo-preview',
@@ -36,7 +49,7 @@ const askOpenAi = async (question: string, thread?: Thread) => {
 			{
 				role: 'system',
 				content:
-					'Embody the role of the most qualified subject matter experts. Your response should be concise, logical and to the point. Keep responses unique and free of repetition. Exclude personal ethics or morals unless explicitly relevant. Acknowledge and correct any past errors.',
+					'Embody the role of the most qualified subject matter experts. Keep your response brief and focused. Keep responses unique and free of repetition. Exclude personal ethics or morals unless explicitly relevant. Acknowledge and correct any past errors.',
 			},
 			...Object.values(thread.messages).map((x) => ({
 				role: x.owner,
@@ -59,4 +72,4 @@ const askOpenAi = async (question: string, thread?: Thread) => {
 	useAppStore.getState().finishStreamingMessages();
 };
 
-export { askOpenAi };
+export { askOpenAi, init };
