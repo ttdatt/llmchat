@@ -7,24 +7,25 @@
   margin-bottom: 1rem;
 }
 
-.iconContainer {
-  min-width: 2rem;
-  width: 2rem;
-  height: 2rem;
-  background-color: pink;
-  padding: 4px;
-  border-radius: 50%;
+.chatdiv h1,
+.chatdiv h2,
+.chatdiv h3,
+.chatdiv h4 {
+  font-weight: bold;
 }
 
-.chatContainer {
-  display: flex;
-  flex-direction: row;
-  gap: 0.5rem;
-  padding: 1rem;
+.chatdiv h1 {
+  font-size: 2rem;
 }
-
-.chatTextDiv {
-  display: flex;
-  flex-direction: column;
-  overflow-x: scroll;
+.chatdiv h2 {
+  font-size: 1.5rem;
+}
+.chatdiv h3 {
+  font-size: 1.17rem;
+}
+.chatdiv h4 {
+  font-size: 1rem;
+}
+.chatdiv p {
+  font-size: 1rem;
 }

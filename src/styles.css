@@ -1,3 +1,10 @@
 :root {
   overscroll-behavior: none;
 }
+
+@layer tailwind {
+  @tailwind base;
+}
+
+@tailwind components;
+@tailwind utilities;

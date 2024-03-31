@@ -28,20 +28,14 @@ export const NavItem = memo(({ thread: t, currentThreadId }: NavItemProps) => {
 				<Menu.Target>
 					<UnstyledButton
 						onClick={(e) => e.stopPropagation()}
-						style={{
-							display: 'flex',
-							height: '100%',
-							width: 30,
-							justifyContent: 'flex-end',
-							alignItems: 'center',
-						}}>
-						<IconDots width={14} height={14} />
+						className='flex h-full w-8 justify-end items-center'>
+						<IconDots className='size-3.5' />
 					</UnstyledButton>
 				</Menu.Target>
 				<Menu.Dropdown>
 					<Menu.Item
 						onClick={() => deleteThread(t.id)}
-						leftSection={<IconTrash style={{ width: 14, height: 14 }} />}>
+						leftSection={<IconTrash className='size-3.5' />}>
 						Delete chat
 					</Menu.Item>
 				</Menu.Dropdown>

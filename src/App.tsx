@@ -7,13 +7,7 @@ import { Settings } from './components/settings/Settings';
 
 const MainPage = () => {
 	return (
-		<div
-			style={{
-				height: '100vh',
-				width: '100vw',
-				display: 'flex',
-				flexDirection: 'row',
-			}}>
+		<div className='h-screen w-screen flex flex-row'>
 			<Navbar />
 			<MessageArea />
 			<Settings />

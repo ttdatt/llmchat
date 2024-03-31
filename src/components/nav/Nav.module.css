@@ -16,22 +16,6 @@
   overflow: scroll;
 }
 
-.main {
-  flex: 1;
-  margin-top: 1rem;
-}
-
-.title {
-  font-family: Greycliff CF, var(--mantine-font-family);
-  margin-bottom: var(--mantine-spacing-xl);
-  background-color: var(--mantine-color-body);
-  padding: var(--mantine-spacing-md);
-  padding-top: rem(18px);
-  height: rem(60px);
-  border-bottom: rem(1px) solid
-    light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-7));
-}
-
 .link {
   display: flex;
   flex: 1;
@@ -54,11 +38,8 @@
   }
 
   &[data-active] {
-    &,
-    &:hover {
-      border-left-color: var(--mantine-color-blue-filled);
-      background-color: var(--mantine-color-blue-filled);
-      color: var(--mantine-color-white);
-    }
+    border-left-color: var(--mantine-color-blue-filled);
+    background-color: var(--mantine-color-blue-filled);
+    color: var(--mantine-color-white);
   }
 }

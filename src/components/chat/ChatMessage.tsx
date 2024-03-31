@@ -15,11 +15,11 @@ type ChatMessageProps = {
 export const ChatMessage = memo(({ text, owner }: ChatMessageProps) => {
 	const Icon = useMemo(() => {
 		if (owner === 'assistant') {
-			return <GptIcon iconStyle={{ fill: 'white' }} />;
+			return <GptIcon />;
 		}
 		return (
-			<div className={classes.iconContainer}>
-				<IconUserFilled style={{ fill: 'white' }} />
+			<div className='w-8 h-8 bg-pink-300 p-1 rounded-full'>
+				<IconUserFilled className='fill-white' />
 			</div>
 		);
 	}, [owner]);
@@ -36,21 +36,14 @@ export const ChatMessage = memo(({ text, owner }: ChatMessageProps) => {
 				const match = /language-(\w+)/.exec(className || '');
 
 				if (node?.position?.start.line === node?.position?.end.line) {
-					return (
-						<span
-							style={{
-								fontWeight: 'bold',
-								color: 'black',
-							}}>
-							`{children}`
-						</span>
-					);
+					return <span className='font-bold text-black'>`{children}`</span>;
 				}
 
 				return (
 					<SyntaxHighlighter
 						children={String(children)}
 						language={match?.[1] ?? 'plaintext'}
+						class='bg-black rounded-sm'
 						customStyle={{
 							backgroundColor: 'black',
 							borderRadius: 4,
@@ -70,9 +63,9 @@ export const ChatMessage = memo(({ text, owner }: ChatMessageProps) => {
 	);
 
 	return (
-		<div className={classes.chatContainer}>
+		<div className='flex flex-row gap-2 p-4'>
 			{Icon}
-			<div className={classes.chatTextDiv}>
+			<div className='flex flex-col overflow-x-scroll'>
 				<Text size='lg' fw={600} lh='2rem'>
 					{owner === 'assistant' ? 'Assistant' : 'You'}
 				</Text>

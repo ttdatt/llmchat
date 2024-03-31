@@ -29,7 +29,7 @@ export const Settings = () => {
 					}}
 				/>
 			</div>
-			<Divider style={{ margin: '12px 0' }} />
+			<Divider className='my-3 mx-0' />
 			<div className={classes.settingsModalDiv}>
 				<Text>Delete all chats</Text>
 				<Button

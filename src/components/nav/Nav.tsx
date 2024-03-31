@@ -17,18 +17,14 @@ export function Navbar() {
 
 	return (
 		<div className={classes.navbar}>
-			<div
-				style={{
-					display: 'flex',
-					flexDirection: 'column',
-				}}>
+			<div className='flex flex-col'>
 				<Button onClick={() => createThread()}>New chat</Button>
 				{/* <Button onClick={() => clearAll()}>Clear all</Button> */}
 			</div>
-			<div className={classes.main}>{links}</div>
+			<div className='flex-1 mt-4'>{links}</div>
 			<div>
 				<UnstyledButton onClick={toggleModal}>
-					<IconSettings style={{ fill: 'white' }} />
+					<IconSettings className='fill-white' />
 				</UnstyledButton>
 			</div>
 		</div>

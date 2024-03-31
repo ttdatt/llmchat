@@ -8,14 +8,7 @@ export const ChatInput = () => {
 	const textareaRef = React.useRef<HTMLTextAreaElement>(null);
 
 	return (
-		<div
-			style={{
-				position: 'sticky',
-				bottom: 0,
-				padding: 12,
-				paddingTop: 0,
-				backgroundColor: 'white',
-			}}>
+		<div className='sticky bottom-0 p-3 pt-0 bg-white'>
 			<Textarea
 				ref={textareaRef}
 				autosize
