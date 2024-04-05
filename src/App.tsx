@@ -1,32 +1,36 @@
 import { MantineProvider } from '@mantine/core';
 import { Navbar } from './components/nav/Nav';
 import { MessageArea } from './components/MessageArea';
-import { useAppStore } from './store';
 import { useEffect } from 'react';
-import { Settings } from './components/settings/Settings';
+import { Settings } from './components/Settings';
+import { initAtom } from './atom/atoms';
+import { Provider, useSetAtom } from 'jotai';
+import { atomStore } from './atom/store';
 
 const MainPage = () => {
-	return (
-		<div className='h-screen w-screen flex flex-row'>
-			<Navbar />
-			<MessageArea />
-			<Settings />
-		</div>
-	);
+  const init = useSetAtom(initAtom);
+
+  useEffect(() => {
+    init();
+  }, [init]);
+
+  return (
+    <div className='h-screen w-screen flex flex-row'>
+      <Navbar />
+      <MessageArea />
+      <Settings />
+    </div>
+  );
 };
 
 function App() {
-	const init = useAppStore((state) => state.init);
-
-	useEffect(() => {
-		init();
-	}, [init]);
-
-	return (
-		<MantineProvider>
-			<MainPage />
-		</MantineProvider>
-	);
+  return (
+    <MantineProvider>
+      <Provider store={atomStore}>
+        <MainPage />
+      </Provider>
+    </MantineProvider>
+  );
 }
 
 export default App;

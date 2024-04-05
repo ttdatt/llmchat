@@ -1,32 +1,36 @@
 import { Button, UnstyledButton } from '@mantine/core';
 import classes from './Nav.module.css';
-import { useAppStore } from '../../store';
 import { NavItem } from './NavItem';
 import { IconSettings } from '@tabler/icons-react';
-// import { clearAll } from '../services/storage/storage';
+import { useAtomValue, useSetAtom } from 'jotai';
+import {
+  createNewThreadAtom,
+  currentThreadIdAtom,
+  modalVisibleAtom,
+  threadsAtom,
+} from '@/atom/atoms';
 
 export function Navbar() {
-	const threads = useAppStore((state) => state.threads);
-	const currentThreadId = useAppStore((state) => state.currentThreadId);
-	const createThread = useAppStore((state) => state.createNewThread);
-	const toggleModal = useAppStore((state) => state.toggleModal);
+  const threads = useAtomValue(threadsAtom);
+  const currentThreadId = useAtomValue(currentThreadIdAtom);
+  const createThread = useSetAtom(createNewThreadAtom);
+  const openSettings = useSetAtom(modalVisibleAtom);
 
-	const links = Object.values(threads).map((t) => (
-		<NavItem key={t.id} thread={t} currentThreadId={currentThreadId} />
-	));
+  const links = Object.values(threads).map((t) => (
+    <NavItem key={t.id} thread={t} currentThreadId={currentThreadId} />
+  ));
 
-	return (
-		<div className={classes.navbar}>
-			<div className='flex flex-col'>
-				<Button onClick={() => createThread()}>New chat</Button>
-				{/* <Button onClick={() => clearAll()}>Clear all</Button> */}
-			</div>
-			<div className='flex-1 mt-4'>{links}</div>
-			<div>
-				<UnstyledButton onClick={toggleModal}>
-					<IconSettings className='fill-white' />
-				</UnstyledButton>
-			</div>
-		</div>
-	);
+  return (
+    <div className={classes.navbar}>
+      <div className='flex flex-col'>
+        <Button onClick={() => createThread()}>New chat</Button>
+      </div>
+      <div className='flex-1 mt-4'>{links}</div>
+      <div>
+        <UnstyledButton onClick={() => openSettings(true)}>
+          <IconSettings className='fill-white' />
+        </UnstyledButton>
+      </div>
+    </div>
+  );
 }

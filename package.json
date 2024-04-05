@@ -11,6 +11,7 @@
     "lint": "biome format . --write && biome lint . && tsc"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.19.1",
     "@mantine/core": "^7.6.2",
     "@mantine/hooks": "^7.6.2",
     "@tabler/icons-react": "^3.1.0",
@@ -18,14 +19,15 @@
     "@tauri-apps/plugin-shell": ">=2.0.0-beta.2",
     "@tauri-apps/plugin-store": "^2.0.0-beta.2",
     "immer": "^10.0.4",
+    "jotai": "^2.7.2",
+    "jotai-immer": "^0.3.0",
     "lodash": "^4.17.21",
     "openai": "^4.29.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-markdown": "^9.0.1",
     "react-syntax-highlighter": "^15.5.0",
-    "uuid": "^9.0.1",
-    "zustand": "^4.5.2"
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "@biomejs/biome": "1.6.3",

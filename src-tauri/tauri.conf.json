@@ -1,6 +1,6 @@
 {
   "productName": "llmchat",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "identifier": "com.dat.llmchat",
   "build": {
     "beforeDevCommand": "bun run dev",
