@@ -2,6 +2,7 @@ import Anthropic from '@anthropic-ai/sdk';
 import { Thread } from '@/types/Message';
 import { LlmModelClient } from '@/types/LlmTypes';
 import {
+  customInstructionsAtom,
   finishStreamingMessagesAtom,
   llmTokenAtom,
   modelAtom,
@@ -16,7 +17,7 @@ const initializeClient = (token: string) => {
     apiKey: token,
   });
   atomStore.sub(llmTokenAtom, async () => {
-    if (anthropic) anthropic.apiKey = await atomStore.get(llmTokenAtom);
+    if (anthropic) anthropic.apiKey = (await atomStore.get(llmTokenAtom)) ?? '';
     else
       anthropic = new Anthropic({
         apiKey: token,
@@ -45,16 +46,19 @@ const generateText = async (question: string, thread?: Thread) => {
   if (!question || !thread) return;
 
   if (!anthropic) {
-    anthropic = initializeClient(await atomStore.get(llmTokenAtom));
+    const token = atomStore.get(llmTokenAtom);
+    if (!token) return;
+    anthropic = initializeClient(token);
   }
 
-  const model = (await atomStore.get(modelAtom)).id;
+  const model = atomStore.get(modelAtom).id;
+  const customInstructions = atomStore.get(customInstructionsAtom);
+
   const stream = await anthropic.messages.create({
     model,
     max_tokens: 1024,
     temperature: 0.5,
-    system:
-      'Embody the role of the most qualified subject matter experts. Keep your response brief and focused. Keep responses unique and free of repetition. Exclude personal ethics or morals unless explicitly relevant. Acknowledge and correct any past errors.',
+    system: customInstructions,
     messages: [
       ...Object.values(thread.messages).map((x) => ({
         role: x.owner,

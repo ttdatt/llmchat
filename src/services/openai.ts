@@ -2,6 +2,7 @@ import OpenAI from 'openai';
 import { Thread } from '@/types/Message';
 import { LlmModelClient } from '@/types/LlmTypes';
 import {
+  customInstructionsAtom,
   finishStreamingMessagesAtom,
   llmTokenAtom,
   modelAtom,
@@ -21,7 +22,7 @@ const initializeClient = (token: string) => {
 
   atomStore.sub(llmTokenAtom, async () => {
     if (!openai) return;
-    openai.apiKey = await atomStore.get(llmTokenAtom);
+    openai.apiKey = (await atomStore.get(llmTokenAtom)) ?? '';
   });
   return openai;
 };
@@ -48,10 +49,13 @@ const generateText = async (question: string, thread?: Thread) => {
   console.log('openai', openai);
 
   if (!openai) {
-    openai = initializeClient(await atomStore.get(llmTokenAtom));
+    const token = await atomStore.get(llmTokenAtom);
+    if (!token) return;
+    openai = initializeClient(token);
   }
 
-  const model = (await atomStore.get(modelAtom)).id;
+  const model = atomStore.get(modelAtom).id;
+  const customInstructions = atomStore.get(customInstructionsAtom);
 
   const stream = await openai.chat.completions.create({
     model,
@@ -59,8 +63,7 @@ const generateText = async (question: string, thread?: Thread) => {
     messages: [
       {
         role: 'system',
-        content:
-          'Embody the role of the most qualified subject matter experts. Keep your response brief and focused. Keep responses unique and free of repetition. Exclude personal ethics or morals unless explicitly relevant. Acknowledge and correct any past errors.',
+        content: customInstructions,
       },
       ...Object.values(thread.messages).map((x) => ({
         role: x.owner,

@@ -23,6 +23,10 @@ import { decrypt, encrypt } from '@/utils/crypto';
 
 let llmClient: LlmModelClient;
 
+const customInstructionsAtom = atomWithStorage<string>(
+  'instructions',
+  'Embody the role of the most qualified subject matter experts. Keep your response brief and focused. Keep responses unique and free of repetition. Exclude personal ethics or morals unless explicitly relevant. Acknowledge and correct any past errors.',
+);
 const currentThreadIdAtom = atom<string | undefined>(undefined);
 const threadsAtom = atomWithImmer<Record<string, Thread>>({});
 const isStreamingAtom = atom(false);
@@ -33,22 +37,24 @@ const llmTokensAtom = withImmer(
     claude: '',
   }),
 );
-const llmTokenAtom = atom(
-  async (get) => {
-    const llmTokens = get(llmTokensAtom);
-    const selectedModel = get(selectedModelAtom);
-    const encrypted = llmTokens[selectedModel.type];
-    if (!encrypted) return '';
-    return await decrypt(encrypted);
-  },
-  async (_, set, { model, token }: { model: LlmModel; token: string }) => {
-    const encrypted = await encrypt(token);
-    set(llmTokensAtom, (tokens) => {
-      tokens[model.type] = encrypted;
-    });
-  },
+const llmTokenAtom = unwrap(
+  atom(
+    async (get) => {
+      const llmTokens = get(llmTokensAtom);
+      const selectedModel = get(selectedModelAtom);
+      const encrypted = llmTokens[selectedModel.type];
+      if (!encrypted) return '';
+      return await decrypt(encrypted);
+    },
+    async (_, set, { model, token }: { model: LlmModel; token?: string }) => {
+      let encrypted = '';
+      if (token) encrypted = await encrypt(token);
+      set(llmTokensAtom, (tokens) => {
+        tokens[model.type] = encrypted;
+      });
+    },
+  ),
 );
-const unwrappedLlmTokenAtom = unwrap(llmTokenAtom);
 
 const selectedModelAtom = atomWithStorage('selectedModel', models[0]);
 const modelAtom = atom(
@@ -74,7 +80,6 @@ const currentThreadAtom = atom((get) => {
 
 const initAtom = atom(null, async (get, set) => {
   const model = get(selectedModelAtom);
-  console.log('fwef', model);
 
   if (model.type === LlmType.OpenAI) llmClient = openaiClient;
   else if (model.type === LlmType.Claude) llmClient = claudeClient;
@@ -184,5 +189,5 @@ export {
   finishStreamingMessagesAtom,
   deleteAllThreadsAtom,
   modelAtom,
-  unwrappedLlmTokenAtom,
+  customInstructionsAtom,
 };

@@ -10,48 +10,59 @@ import {
   Input,
   Group,
   CheckIcon,
+  Textarea,
 } from '@mantine/core';
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { LlmModel, models } from '@/types/LlmTypes';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import {
+  customInstructionsAtom,
   deleteAllThreadsAtom,
+  llmTokenAtom,
+  llmTokensAtom,
   modalVisibleAtom,
   modelAtom,
-  unwrappedLlmTokenAtom,
 } from '@/atom/atoms';
+import { decrypt } from '@/utils/crypto';
 
-const ModelCombobox = () => {
-  const [selectedModel, selectModel] = useAtom(modelAtom);
+const ModelCombobox = ({
+  selectedModel,
+  onChange,
+}: { selectedModel: LlmModel; onChange: (m: LlmModel) => void }) => {
+  const [model, selectModel] = useState(selectedModel);
 
   const combobox = useCombobox({
     onDropdownOpen: () => combobox.updateSelectedOptionIndex('active'),
   });
 
-  const [value, setValue] = useState<LlmModel | undefined>(selectedModel);
+  const options = useMemo(
+    () =>
+      models.map((item) => {
+        const isActive = item.id === model.id;
 
-  const options = models.map((item) => {
-    const isActive = item.id === selectedModel.id;
-
-    return (
-      <Combobox.Option value={item.id} key={item.id} active={isActive}>
-        <Group gap='xs'>
-          {isActive && <CheckIcon size={12} />}
-          <span>{item.name}</span>
-        </Group>
-      </Combobox.Option>
-    );
-  });
+        return (
+          <Combobox.Option value={item.id} key={item.id} active={isActive}>
+            <Group gap='xs'>
+              {isActive && <CheckIcon size={12} />}
+              <span>{item.name}</span>
+            </Group>
+          </Combobox.Option>
+        );
+      }),
+    [model.id],
+  );
 
   return (
     <Combobox
       store={combobox}
       onOptionSubmit={(val) => {
-        const m = models.find((x) => x.id === val);
-        setValue(m);
-        if (m) selectModel(m);
-        combobox.updateSelectedOptionIndex('active');
-        combobox.closeDropdown();
+        const index = models.findIndex((x) => x.id === val);
+        if (index >= 0) {
+          const m = models[index];
+          selectModel(m);
+          onChange(m);
+          combobox.closeDropdown();
+        }
       }}>
       <Combobox.Target>
         <InputBase
@@ -62,7 +73,7 @@ const ModelCombobox = () => {
           rightSection={<Combobox.Chevron />}
           rightSectionPointerEvents='none'
           onClick={() => combobox.toggleDropdown()}>
-          {value?.name || <Input.Placeholder>Pick value</Input.Placeholder>}
+          {model?.name || <Input.Placeholder>Pick value</Input.Placeholder>}
         </InputBase>
       </Combobox.Target>
 
@@ -76,30 +87,75 @@ const ModelCombobox = () => {
 export const Settings = () => {
   const [opened, toggle] = useAtom(modalVisibleAtom);
   const deleteAllChat = useSetAtom(deleteAllThreadsAtom);
-  const selectedModel = useAtomValue(modelAtom);
+  const [selectedModel, selectModel] = useAtom(modelAtom);
+  const [llmToken, setLlmToken] = useAtom(llmTokenAtom);
+  const llmTokens = useAtomValue(llmTokensAtom);
+  const [instructions, setInstructions] = useAtom(customInstructionsAtom);
 
-  const [llmToken, setLlmToken] = useAtom(unwrappedLlmTokenAtom);
-  const [text, setText] = useState(llmToken);
+  const [token, setToken] = useState(llmToken);
+  const [model, setModel] = useState(selectedModel);
+  const [localInstructions, setLocalInstructions] = useState(instructions);
+
+  useEffect(() => {
+    setLocalInstructions(instructions);
+  }, [instructions]);
+
+  useEffect(() => {
+    setModel(selectedModel);
+  }, [selectedModel]);
+
+  useEffect(() => {
+    (async () => {
+      const t = llmTokens[model.type];
+      setToken(t ? await decrypt(t) : '');
+    })();
+  }, [model, llmTokens]);
 
   return (
-    <Modal opened={opened} onClose={() => toggle(false)} title='Settings'>
+    <Modal
+      size='lg'
+      opened={opened}
+      onClose={() => {
+        toggle(false);
+        setToken(llmToken);
+      }}
+      title='Settings'>
       <div className='flex flex-row gap-2 items-center justify-between'>
-        <Text>Current LLM token:</Text>
+        <Text className='w-1/3'>Current LLM token:</Text>
         <TextInput
-          key={selectedModel.type}
+          className='w-2/3'
           autoCapitalize='off'
           autoCorrect='off'
-          defaultValue={llmToken}
+          value={token}
           placeholder='Enter your token'
           onChange={(event) => {
-            setText(event.target.value);
+            setToken(event.target.value);
           }}
         />
       </div>
       <Divider className='my-3 mx-0' />
       <div className='flex flex-row gap-2 items-center justify-between'>
-        <Text className='flex-1'>Models</Text>
-        <ModelCombobox />
+        <Text className='w-1/3'>Models</Text>
+        <ModelCombobox
+          selectedModel={selectedModel}
+          onChange={(m) => setModel(m)}
+        />
+      </div>
+      <Divider className='my-3 mx-0' />
+      <div className='flex flex-row gap-2 items-center justify-between'>
+        <Text className='w-1/3'>Custom instructions</Text>
+        <Textarea
+          className='w-2/3'
+          autosize
+          autoFocus
+          autoComplete='off'
+          autoCorrect='off'
+          maxRows={6}
+          value={localInstructions}
+          onChange={(event) => {
+            setLocalInstructions(event.currentTarget.value);
+          }}
+        />
       </div>
       <Divider className='my-3 mx-0' />
       <div className='flex flex-row gap-2 items-center justify-between'>
@@ -115,7 +171,9 @@ export const Settings = () => {
       <div className='flex justify-end mt-5'>
         <Button
           onClick={async () => {
-            if (text) setLlmToken({ model: selectedModel, token: text });
+            selectModel(model);
+            setLlmToken({ model, token });
+            setInstructions(localInstructions);
             toggle(false);
           }}>
           Save

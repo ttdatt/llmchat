@@ -21,8 +21,6 @@ const storeTheads = async (threads: Record<string, Thread>) => {
 };
 
 const loadThreads = async () => {
-  console.log('isWeb', isWeb);
-
   if (isWeb) {
     const allThreads = await db.threads.toArray();
     const threads = allThreads.reduce(
