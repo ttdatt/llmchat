@@ -45,6 +45,7 @@ export const ChatMessage = memo(({ text, owner }: ChatMessageProps) => {
             customStyle={{
               backgroundColor: 'black',
               borderRadius: 4,
+              marginBottom: 20,
             }}
             codeTagProps={{
               style: {

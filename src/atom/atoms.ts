@@ -12,6 +12,7 @@ import { llmClient as openaiClient } from '@/services/openai';
 import { llmClient as claudeClient } from '@/services/claude';
 import {
   clearAllThreads,
+  deleteThread,
   loadThreads,
   storeTheads,
 } from '@/services/threadStorage';
@@ -120,6 +121,7 @@ const sendMessageAtom = atom(null, (get, set, message: string) => {
 });
 
 const deleteThreadAtom = atom(null, (_, set, threadId: string) => {
+  deleteThread(threadId);
   set(threadsAtom, (state) => {
     delete state[threadId];
   });
