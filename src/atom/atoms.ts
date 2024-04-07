@@ -32,7 +32,6 @@ const llmTokensAtom = withImmer(
     claude: '',
   }),
 );
-const immerAtom = withImmer(llmTokensAtom);
 const llmTokenAtom = atom(
   async (get) => {
     const llmTokens = get(llmTokensAtom);
@@ -43,8 +42,8 @@ const llmTokenAtom = atom(
   },
   async (_, set, { model, token }: { model: LlmModel; token: string }) => {
     const encrypted = await encrypt(token);
-    set(immerAtom, (draft) => {
-      draft[model.type] = encrypted;
+    set(llmTokensAtom, (tokens) => {
+      tokens[model.type] = encrypted;
     });
   },
 );
@@ -78,7 +77,6 @@ const initAtom = atom(null, async (get, set) => {
 
   if (model.type === LlmType.OpenAI) llmClient = openaiClient;
   else if (model.type === LlmType.Claude) llmClient = claudeClient;
-  // llmClient.init(get(llmTokensAtom)[model.type]);
 
   const threads = await loadThreads();
   if (threads) set(threadsAtom, threads);
@@ -91,10 +89,11 @@ const createNewThreadAtom = atom(null, (get, set) => {
       id: uuidv4(),
       title: 'New Thread',
       messages: {},
+      timestamp: new Date().toISOString(),
     };
 
-    set(threadsAtom, (state) => {
-      state[newThread.id] = newThread;
+    set(threadsAtom, (threads) => {
+      threads[newThread.id] = newThread;
     });
     set(currentThreadIdAtom, newThread.id);
   }

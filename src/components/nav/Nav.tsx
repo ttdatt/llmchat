@@ -9,6 +9,7 @@ import {
   modalVisibleAtom,
   threadsAtom,
 } from '@/atom/atoms';
+import orderBy from 'lodash/orderBy';
 
 export function Navbar() {
   const threads = useAtomValue(threadsAtom);
@@ -16,9 +17,9 @@ export function Navbar() {
   const createThread = useSetAtom(createNewThreadAtom);
   const openSettings = useSetAtom(modalVisibleAtom);
 
-  const links = Object.values(threads).map((t) => (
-    <NavItem key={t.id} thread={t} currentThreadId={currentThreadId} />
-  ));
+  const links = orderBy(Object.values(threads), 'timestamp', 'desc').map(
+    (t) => <NavItem key={t.id} thread={t} currentThreadId={currentThreadId} />,
+  );
 
   return (
     <div className={classes.navbar}>

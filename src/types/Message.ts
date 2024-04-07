@@ -2,6 +2,7 @@ export type Thread = {
   id: string;
   title: string;
   messages: Record<string, Message>;
+  timestamp: string;
 };
 
 export type Message = {

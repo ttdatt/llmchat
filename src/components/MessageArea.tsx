@@ -1,6 +1,6 @@
 import { ChatMessage } from './chat/ChatMessage';
 import { ChatInput } from './ChatInput';
-import sortBy from 'lodash/sortBy';
+import orderBy from 'lodash/orderBy';
 import { useAtomValue } from 'jotai';
 import { currentThreadAtom } from '@/atom/atoms';
 
@@ -12,9 +12,11 @@ export const MessageArea = () => {
   return (
     <div className='flex flex-col w-full overflow-scroll overscroll-none'>
       <div className='flex-1'>
-        {sortBy(Object.values(currentThread.messages), 'timestamp').map((x) => {
-          return <ChatMessage key={x.id} text={x.text} owner={x.owner} />;
-        })}
+        {orderBy(Object.values(currentThread.messages), 'timestamp', 'asc').map(
+          (x) => {
+            return <ChatMessage key={x.id} text={x.text} owner={x.owner} />;
+          },
+        )}
       </div>
       <ChatInput />
     </div>
