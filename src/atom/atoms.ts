@@ -26,16 +26,20 @@ let llmClient: LlmModelClient;
 const customInstructionsAtom = atomWithStorage<string>(
   'instructions',
   'Embody the role of the most qualified subject matter experts. Keep your response brief and focused. Keep responses unique and free of repetition. Exclude personal ethics or morals unless explicitly relevant. Acknowledge and correct any past errors.',
+  undefined,
+  { getOnInit: true },
 );
 const currentThreadIdAtom = atom<string | undefined>(undefined);
 const threadsAtom = atomWithImmer<Record<string, Thread>>({});
 const isStreamingAtom = atom(false);
 const modalVisibleAtom = atom(false);
 const llmTokensAtom = withImmer(
-  atomWithStorage<LlmTokensType>('tokens', {
-    openai: '',
-    claude: '',
-  }),
+  atomWithStorage<LlmTokensType>(
+    'tokens',
+    { openai: '', claude: '' },
+    undefined,
+    { getOnInit: true },
+  ),
 );
 const llmTokenAtom = unwrap(
   atom(
@@ -56,7 +60,12 @@ const llmTokenAtom = unwrap(
   ),
 );
 
-const selectedModelAtom = atomWithStorage('selectedModel', models[0]);
+const selectedModelAtom = atomWithStorage(
+  'selectedModel',
+  models[0],
+  undefined,
+  { getOnInit: true },
+);
 const modelAtom = atom(
   (get) => get(selectedModelAtom),
   (_, set, model: LlmModel) => {

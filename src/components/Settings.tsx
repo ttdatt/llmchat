@@ -101,10 +101,6 @@ export const Settings = () => {
   }, [instructions]);
 
   useEffect(() => {
-    setModel(selectedModel);
-  }, [selectedModel]);
-
-  useEffect(() => {
     (async () => {
       const t = llmTokens[model.type];
       setToken(t ? await decrypt(t) : '');
