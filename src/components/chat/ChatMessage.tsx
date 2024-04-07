@@ -63,7 +63,7 @@ export const ChatMessage = memo(({ text, owner }: ChatMessageProps) => {
   return (
     <div className='flex flex-row gap-2 p-4'>
       {Icon}
-      <div className='flex flex-col overflow-x-scroll'>
+      <div className='flex flex-col overflow-x-auto'>
         <Text size='lg' fw={600} lh='2rem'>
           {owner === 'assistant' ? 'Assistant' : 'You'}
         </Text>

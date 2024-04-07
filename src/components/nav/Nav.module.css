@@ -13,7 +13,7 @@
   max-width: 16rem;
   padding: 1rem;
   overscroll-behavior: none;
-  overflow: scroll;
+  overflow-y: auto;
 }
 
 .link {
