@@ -17,9 +17,10 @@ import {
   storeTheads,
 } from '@/services/threadStorage';
 import { v4 as uuidv4 } from 'uuid';
-import { maxBy } from 'lodash';
+import maxBy from 'lodash/maxBy';
 import { atomWithStorage, unwrap } from 'jotai/utils';
 import { decrypt, encrypt } from '@/utils/crypto';
+import { notifications } from '@mantine/notifications';
 
 let llmClient: LlmModelClient;
 
@@ -114,23 +115,31 @@ const createNewThreadAtom = atom(null, (get, set) => {
   }
 });
 
-const sendMessageAtom = atom(null, (get, set, message: string) => {
+const sendMessageAtom = atom(null, async (get, set, message: string) => {
   const currentThreadId = get(currentThreadIdAtom);
-  const currentThread = get(threadsAtom)[currentThreadId ?? ''];
-  if (currentThread) {
-    llmClient.generateText(message, currentThread);
-  }
-
   if (currentThreadId) {
-    const msg: Message = {
-      id: uuidv4(),
-      owner: 'user',
-      text: message,
-      timestamp: new Date().toISOString(),
-    };
-    set(threadsAtom, (state) => {
-      state[currentThreadId].messages[msg.id] = msg;
-    });
+    const currentThread = get(threadsAtom)[currentThreadId];
+    try {
+      await llmClient.generateText(message, currentThread);
+      const msg: Message = {
+        id: uuidv4(),
+        owner: 'user',
+        text: message,
+        timestamp: new Date().toISOString(),
+      };
+      set(threadsAtom, (state) => {
+        state[currentThreadId].messages[msg.id] = msg;
+      });
+    } catch (error) {
+      if (error instanceof Error) {
+        notifications.show({
+          title: 'Error',
+          message: error.message,
+          color: 'red',
+          autoClose: 10000,
+        });
+      }
+    }
   }
 });
 

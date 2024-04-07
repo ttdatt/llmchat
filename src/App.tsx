@@ -6,6 +6,7 @@ import { Settings } from './components/Settings';
 import { initAtom } from './atom/atoms';
 import { Provider, useSetAtom } from 'jotai';
 import { atomStore } from './atom/store';
+import { Notifications } from '@mantine/notifications';
 
 const MainPage = () => {
   const init = useSetAtom(initAtom);
@@ -27,6 +28,7 @@ function App() {
   return (
     <MantineProvider>
       <Provider store={atomStore}>
+        <Notifications />
         <MainPage />
       </Provider>
     </MantineProvider>
