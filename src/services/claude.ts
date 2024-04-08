@@ -9,6 +9,7 @@ import {
   streamMessagesAtom,
 } from '@/atom/atoms';
 import { atomStore } from '@/atom/store';
+import { notifications } from '@mantine/notifications';
 
 let anthropic: undefined | Anthropic;
 
@@ -54,30 +55,41 @@ const generateText = async (question: string, thread?: Thread) => {
   const model = atomStore.get(modelAtom).id;
   const customInstructions = atomStore.get(customInstructionsAtom);
 
-  const stream = await anthropic.messages.create({
-    model,
-    max_tokens: 1024,
-    temperature: 0.5,
-    system: customInstructions,
-    messages: [
-      ...Object.values(thread.messages).map((x) => ({
-        role: x.owner,
-        content: x.text,
-      })),
-      {
-        role: 'user',
-        content: question,
-      },
-    ],
-    stream: true,
-  });
+  try {
+    const stream = await anthropic.messages.create({
+      model,
+      max_tokens: 1024,
+      temperature: 0.5,
+      system: customInstructions,
+      messages: [
+        ...Object.values(thread.messages).map((x) => ({
+          role: x.owner,
+          content: x.text,
+        })),
+        {
+          role: 'user',
+          content: question,
+        },
+      ],
+      stream: true,
+    });
 
-  for await (const messageStreamEvent of stream) {
-    if (messageStreamEvent.type === 'content_block_delta') {
-      atomStore.set(streamMessagesAtom, messageStreamEvent.delta.text);
+    for await (const messageStreamEvent of stream) {
+      if (messageStreamEvent.type === 'content_block_delta') {
+        atomStore.set(streamMessagesAtom, messageStreamEvent.delta.text);
+      }
+    }
+    atomStore.set(finishStreamingMessagesAtom, null);
+  } catch (error) {
+    if (error instanceof Error) {
+      notifications.show({
+        title: 'Error',
+        message: error.message,
+        color: 'red',
+        autoClose: 10000,
+      });
     }
   }
-  atomStore.set(finishStreamingMessagesAtom, null);
 };
 
 const llmClient: LlmModelClient = {

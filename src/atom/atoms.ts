@@ -20,7 +20,6 @@ import { v4 as uuidv4 } from 'uuid';
 import maxBy from 'lodash/maxBy';
 import { atomWithStorage, unwrap } from 'jotai/utils';
 import { decrypt, encrypt } from '@/utils/crypto';
-import { notifications } from '@mantine/notifications';
 
 let llmClient: LlmModelClient;
 
@@ -119,27 +118,16 @@ const sendMessageAtom = atom(null, async (get, set, message: string) => {
   const currentThreadId = get(currentThreadIdAtom);
   if (currentThreadId) {
     const currentThread = get(threadsAtom)[currentThreadId];
-    try {
-      await llmClient.generateText(message, currentThread);
-      const msg: Message = {
-        id: uuidv4(),
-        owner: 'user',
-        text: message,
-        timestamp: new Date().toISOString(),
-      };
-      set(threadsAtom, (state) => {
-        state[currentThreadId].messages[msg.id] = msg;
-      });
-    } catch (error) {
-      if (error instanceof Error) {
-        notifications.show({
-          title: 'Error',
-          message: error.message,
-          color: 'red',
-          autoClose: 10000,
-        });
-      }
-    }
+    llmClient.generateText(message, currentThread);
+    const msg: Message = {
+      id: uuidv4(),
+      owner: 'user',
+      text: message,
+      timestamp: new Date().toISOString(),
+    };
+    set(threadsAtom, (state) => {
+      state[currentThreadId].messages[msg.id] = msg;
+    });
   }
 });
 

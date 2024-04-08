@@ -9,6 +9,7 @@ import {
   streamMessagesAtom,
 } from '@/atom/atoms';
 import { atomStore } from '@/atom/store';
+import { notifications } from '@mantine/notifications';
 // import fileText from '../../assets/msg.txt';
 // import codeText from '../assets/code.txt';
 
@@ -57,30 +58,42 @@ const generateText = async (question: string, thread?: Thread) => {
   const model = atomStore.get(modelAtom).id;
   const customInstructions = atomStore.get(customInstructionsAtom);
 
-  const stream = await openai.chat.completions.create({
-    model,
-    temperature: 0.5,
-    messages: [
-      {
-        role: 'system',
-        content: customInstructions,
-      },
-      ...Object.values(thread.messages).map((x) => ({
-        role: x.owner,
-        content: x.text,
-      })),
-      {
-        role: 'user',
-        content: question,
-      },
-    ],
-    stream: true,
-  });
+  try {
+    const stream = await openai.chat.completions.create({
+      model,
+      temperature: 0.5,
+      messages: [
+        {
+          role: 'system',
+          content: customInstructions,
+        },
+        ...Object.values(thread.messages).map((x) => ({
+          role: x.owner,
+          content: x.text,
+        })),
+        {
+          role: 'user',
+          content: question,
+        },
+      ],
+      stream: true,
+    });
 
-  for await (const chunk of stream) {
-    atomStore.set(streamMessagesAtom, chunk.choices[0]?.delta?.content || '');
+    for await (const chunk of stream) {
+      atomStore.set(streamMessagesAtom, chunk.choices[0]?.delta?.content || '');
+    }
+
+    atomStore.set(finishStreamingMessagesAtom, true);
+  } catch (error) {
+    if (error instanceof Error) {
+      notifications.show({
+        title: 'Error',
+        message: error.message,
+        color: 'red',
+        autoClose: 10000,
+      });
+    }
   }
-  atomStore.set(finishStreamingMessagesAtom, true);
 };
 
 const llmClient: LlmModelClient = {
