@@ -3,7 +3,7 @@ import { Message } from '@/types/Message';
 import { GptIcon } from '@/assets/gpt';
 import { IconUserFilled } from '@tabler/icons-react';
 import Markdown, { ExtraProps } from 'react-markdown';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import SyntaxHighlighter from 'react-syntax-highlighter/dist/esm/prism-async-light';
 import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import classes from './ChatMessage.module.css';
 import { memo, useMemo } from 'react';
