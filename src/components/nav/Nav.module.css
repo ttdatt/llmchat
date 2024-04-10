@@ -16,6 +16,25 @@
   overflow-y: auto;
 }
 
+.close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+.mobileToolbar {
+  height: 56px;
+  border-bottom: 1px grey solid;
+  z-index: 1;
+}
+
+.navbarMobile {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 2;
+}
+
 .link {
   display: flex;
   flex: 1;
