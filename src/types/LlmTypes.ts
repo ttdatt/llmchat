@@ -17,7 +17,7 @@ type LlmModel = {
 
 const models: LlmModel[] = [
   {
-    id: 'gpt-4-turbo-preview',
+    id: 'gpt-4-turbo',
     name: 'GPT-4 Turbo',
     type: LlmType.OpenAI,
   },
