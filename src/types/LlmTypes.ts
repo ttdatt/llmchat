@@ -22,6 +22,11 @@ const models: LlmModel[] = [
     type: LlmType.OpenAI,
   },
   {
+    id: 'gpt-4-turbo-preview',
+    name: 'GPT-4 Turbo Preview',
+    type: LlmType.OpenAI,
+  },
+  {
     id: 'claude-3-opus-20240229',
     name: 'Claude 3 Opus',
     type: LlmType.Claude,
