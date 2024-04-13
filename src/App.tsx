@@ -7,7 +7,6 @@ import { initAtom } from './atom/atoms';
 import { Provider, useSetAtom } from 'jotai';
 import { atomStore } from './atom/store';
 import { Notifications } from '@mantine/notifications';
-import { useMobile } from './hooks/useMobile';
 
 const MainPage = () => {
   const init = useSetAtom(initAtom);
@@ -16,17 +15,10 @@ const MainPage = () => {
     init();
   }, [init]);
 
-  const isMobile = useMobile();
-
   return (
-    <div
-      className={`h-screen w-screen flex ${
-        isMobile ? 'flex-col' : 'flex-row'
-      }`}>
-      {isMobile !== undefined ? (
-        <Navbar key={String(isMobile)} isMobile={isMobile} />
-      ) : null}
-      {isMobile !== undefined ? <MessageArea isMobile={isMobile} /> : null}
+    <div className='h-screen w-screen flex flex-row'>
+      <Navbar />
+      <MessageArea />
       <Settings />
     </div>
   );
