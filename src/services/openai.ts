@@ -2,14 +2,14 @@ import OpenAI from 'openai';
 import { Thread } from '@/types/Message';
 import { LlmModelClient } from '@/types/LlmTypes';
 import {
-  customInstructionsAtom,
   finishStreamingMessagesAtom,
   llmTokenAtom,
   modelAtom,
   streamMessagesAtom,
-} from '@/atom/atoms';
+} from '@/atom/derivedAtoms';
 import { atomStore } from '@/atom/store';
 import { notifications } from '@mantine/notifications';
+import { customInstructionsAtom } from '@/atom/atoms';
 // import fileText from '../../assets/msg.txt';
 // import codeText from '../assets/code.txt';
 
@@ -46,8 +46,6 @@ const generateText = async (question: string, thread?: Thread) => {
   // return;
 
   if (!question || !thread) return;
-
-  console.log('openai', openai);
 
   if (!openai) {
     const token = await atomStore.get(llmTokenAtom);

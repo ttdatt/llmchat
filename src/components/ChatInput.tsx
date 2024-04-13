@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Textarea } from '@mantine/core';
 import { useSetAtom } from 'jotai';
-import { sendMessageAtom } from '@/atom/atoms';
+import { sendMessageAtom } from '@/atom/derivedAtoms';
 
 export const ChatInput = () => {
   const [keydown, setKeydown] = useState<string[]>([]);
@@ -12,8 +12,8 @@ export const ChatInput = () => {
     <div className='sticky bottom-0 p-3 pt-0 bg-white'>
       <Textarea
         ref={textareaRef}
+        styles={{ input: { fontSize: '1rem' } }}
         autosize
-        autoFocus
         autoComplete='off'
         autoCorrect='off'
         maxRows={6}

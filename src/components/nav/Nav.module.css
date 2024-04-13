@@ -1,16 +1,24 @@
 .navbar {
-  background-color: light-dark(
-    var(--mantine-color-gray-0),
-    var(--mantine-color-dark-6)
-  );
+  background-color: '#f8f9fa';
   display: flex;
   flex-direction: column;
   border-right: rem(1px) solid
     light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-4));
-  height: 100vh;
+  height: 100%;
   width: 16rem;
   min-width: 16rem;
   max-width: 16rem;
+  padding: 1rem;
+  overscroll-behavior: none;
+  overflow-y: auto;
+}
+
+.mobileNavBar {
+  background-color: '#f8f9fa';
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  height: 100%;
   padding: 1rem;
   overscroll-behavior: none;
   overflow-y: auto;
