@@ -1,12 +1,30 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Textarea } from '@mantine/core';
 import { useSetAtom } from 'jotai';
 import { sendMessageAtom } from '@/atom/derivedAtoms';
+import { IconSend } from '@tabler/icons-react';
+import { useMobile } from '@/hooks/useMobile';
 
 export const ChatInput = () => {
   const [keydown, setKeydown] = useState<string[]>([]);
   const sendMessage = useSetAtom(sendMessageAtom);
   const textareaRef = React.useRef<HTMLTextAreaElement>(null);
+  const isMobile = useMobile();
+
+  const sendIcon = useMemo(() => {
+    return (
+      <IconSend
+        onClick={() => {
+          if (textareaRef.current) {
+            sendMessage(textareaRef.current.value);
+            textareaRef.current.value = '';
+          }
+        }}
+        stroke={2}
+        color='#228be6'
+      />
+    );
+  }, [sendMessage]);
 
   return (
     <div className='sticky bottom-0 p-3 pt-0 bg-white'>
@@ -17,6 +35,7 @@ export const ChatInput = () => {
         autoComplete='off'
         autoCorrect='off'
         maxRows={6}
+        rightSection={sendIcon}
         onKeyUp={(e) => {
           if (
             e.key.includes('Shift') ||
@@ -38,10 +57,14 @@ export const ChatInput = () => {
           )
             setKeydown((x) => [...x, e.key]);
 
-          if (e.key === 'Enter' && !keydown.includes('Shift')) {
-            e.preventDefault();
-            sendMessage(e.currentTarget.value);
-            if (textareaRef.current) textareaRef.current.value = '';
+          if (e.key === 'Enter') {
+            if (isMobile) {
+              if (textareaRef.current) textareaRef.current.value += '\n';
+            } else if (!keydown.includes('Shift')) {
+              e.preventDefault();
+              sendMessage(e.currentTarget.value);
+              if (textareaRef.current) textareaRef.current.value = '';
+            }
           }
         }}
       />
