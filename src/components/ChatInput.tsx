@@ -57,14 +57,10 @@ export const ChatInput = () => {
           )
             setKeydown((x) => [...x, e.key]);
 
-          if (e.key === 'Enter') {
-            if (isMobile) {
-              if (textareaRef.current) textareaRef.current.value += '\n';
-            } else if (!keydown.includes('Shift')) {
-              e.preventDefault();
-              sendMessage(e.currentTarget.value);
-              if (textareaRef.current) textareaRef.current.value = '';
-            }
+          if (e.key === 'Enter' && !isMobile && !keydown.includes('Shift')) {
+            e.preventDefault();
+            sendMessage(e.currentTarget.value);
+            if (textareaRef.current) textareaRef.current.value = '';
           }
         }}
       />
