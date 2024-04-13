@@ -14,8 +14,6 @@ export const MessageArea = () => {
   const currentThread = useAtomValue(currentThreadAtom);
   const createThread = useSetAtom(createNewThreadAtom);
 
-  if (!currentThread && !isMobile) return null;
-
   return (
     <div
       className={`flex flex-col w-full overflow-auto ${

@@ -105,6 +105,9 @@ const sendMessageAtom = atom(null, async (get, set, message: string) => {
       timestamp: new Date().toISOString(),
     };
     set(threadsAtom, (state) => {
+      if (state[currentThreadId].title === 'New Thread') {
+        state[currentThreadId].title = message.slice(0, 100);
+      }
       state[currentThreadId].messages[msg.id] = msg;
     });
   }
