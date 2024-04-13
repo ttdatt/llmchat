@@ -4,7 +4,8 @@ import classes from './Nav.module.css';
 import { IconDots, IconTrash } from '@tabler/icons-react';
 import { Thread } from '@/types/Message';
 import { useSetAtom } from 'jotai';
-import { currentThreadIdAtom, deleteThreadAtom } from '@/atom/atoms';
+import { currentThreadIdAtom, drawerAtom } from '@/atom/atoms';
+import { deleteThreadAtom } from '@/atom/derivedAtoms';
 
 type NavItemProps = {
   thread: Thread;
@@ -14,6 +15,7 @@ type NavItemProps = {
 export const NavItem = memo(({ thread: t, currentThreadId }: NavItemProps) => {
   const setCurrentThread = useSetAtom(currentThreadIdAtom);
   const deleteThread = useSetAtom(deleteThreadAtom);
+  const setDrawerOpen = useSetAtom(drawerAtom);
 
   return (
     <div
@@ -22,6 +24,7 @@ export const NavItem = memo(({ thread: t, currentThreadId }: NavItemProps) => {
       onClick={async (event) => {
         event.preventDefault();
         setCurrentThread(t.id);
+        setDrawerOpen(false);
       }}
       key={t.id}>
       {t.title}

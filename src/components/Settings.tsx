@@ -17,12 +17,14 @@ import { LlmModel, models } from '@/types/LlmTypes';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import {
   customInstructionsAtom,
-  deleteAllThreadsAtom,
-  llmTokenAtom,
   llmTokensAtom,
   modalVisibleAtom,
-  modelAtom,
 } from '@/atom/atoms';
+import {
+  deleteAllThreadsAtom,
+  llmTokenAtom,
+  modelAtom,
+} from '@/atom/derivedAtoms';
 import { decrypt } from '@/utils/crypto';
 
 const ModelCombobox = ({

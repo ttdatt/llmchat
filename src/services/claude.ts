@@ -2,14 +2,14 @@ import Anthropic from '@anthropic-ai/sdk';
 import { Thread } from '@/types/Message';
 import { LlmModelClient } from '@/types/LlmTypes';
 import {
-  customInstructionsAtom,
   finishStreamingMessagesAtom,
   llmTokenAtom,
   modelAtom,
   streamMessagesAtom,
-} from '@/atom/atoms';
+} from '@/atom/derivedAtoms';
 import { atomStore } from '@/atom/store';
 import { notifications } from '@mantine/notifications';
+import { customInstructionsAtom } from '@/atom/atoms';
 
 let anthropic: undefined | Anthropic;
 
