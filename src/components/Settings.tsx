@@ -26,6 +26,7 @@ import {
   modelAtom,
 } from '@/atom/derivedAtoms';
 import { decrypt } from '@/utils/crypto';
+import { useMobile } from '@/hooks/useMobile';
 
 const ModelCombobox = ({
   selectedModel,
@@ -87,6 +88,7 @@ const ModelCombobox = ({
 };
 
 export const Settings = () => {
+  const isMobile = useMobile();
   const [opened, toggle] = useAtom(modalVisibleAtom);
   const deleteAllChat = useSetAtom(deleteAllThreadsAtom);
   const [selectedModel, selectModel] = useAtom(modelAtom);
@@ -121,6 +123,7 @@ export const Settings = () => {
       <div className='flex flex-row gap-2 items-center justify-between'>
         <Text className='w-1/3'>Current LLM token:</Text>
         <TextInput
+          styles={{ input: { fontSize: isMobile ? '1rem' : '14px' } }}
           className='w-2/3'
           autoCapitalize='off'
           autoCorrect='off'
@@ -143,6 +146,7 @@ export const Settings = () => {
       <div className='flex flex-row gap-2 items-center justify-between'>
         <Text className='w-1/3'>Custom instructions</Text>
         <Textarea
+          styles={{ input: { fontSize: isMobile ? '1rem' : '14px' } }}
           className='w-2/3'
           autosize
           autoFocus
