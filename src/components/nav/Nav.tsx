@@ -57,16 +57,10 @@ export const MobileNavBar = () => {
     <Drawer
       opened={isDrawerOpened}
       onClose={() => setDrawerOpen(false)}
-      styles={{
-        content: {
-          display: 'flex',
-          flex: 1,
-          flexDirection: 'column',
-          height: '100%',
-          backgroundColor: '#f8f9fa',
-        },
-        body: { display: 'flex', flex: 1 },
-        header: { backgroundColor: '#f8f9fa' },
+      classNames={{
+        content: 'flex flex-1 flex-col h-full bg-gray-100',
+        body: 'flex flex-1',
+        header: 'bg-gray-100',
       }}>
       <div className={classes.mobileNavBar}>
         <div className='flex flex-col'>
