@@ -29,7 +29,7 @@ export function Navbar() {
         <Button onClick={() => createThread()}>New chat</Button>
       </div>
       <div className='flex-1 mt-4'>{links}</div>
-      <div className=' sticky bottom-0 bg-white'>
+      <div className=' sticky bottom-0 flex py-2 items-center bg-white'>
         <UnstyledButton
           onClick={() => {
             setDrawerOpen(false);
@@ -54,7 +54,13 @@ export const MobileNavBar = () => {
   );
 
   return (
-    <Drawer opened={isDrawerOpened} onClose={() => setDrawerOpen(false)}>
+    <Drawer
+      opened={isDrawerOpened}
+      onClose={() => setDrawerOpen(false)}
+      classNames={{
+        content: 'flex flex-col',
+        body: 'flex flex-1 flex-col pb-0',
+      }}>
       <div className={classes.mobileNavBar}>
         <div className='flex flex-col'>
           <Button h={44} onClick={() => createThread()}>
@@ -63,7 +69,7 @@ export const MobileNavBar = () => {
         </div>
         <div className='flex-1 grow-1 mt-4'>{links}</div>
       </div>
-      <div className='sticky bottom-0 px-4 bg-white'>
+      <div className='sticky bottom-0 px-4 py-2 flex items-center bg-white'>
         <UnstyledButton
           onClick={() => {
             setDrawerOpen(false);
