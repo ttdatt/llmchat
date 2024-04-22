@@ -1,5 +1,4 @@
 .navbar {
-  background-color: '#f8f9fa';
   display: flex;
   flex-direction: column;
   border-right: rem(1px) solid
@@ -8,13 +7,12 @@
   width: 16rem;
   min-width: 16rem;
   max-width: 16rem;
-  padding: 1rem;
+  padding: 1rem 1rem 0 1rem;
   overscroll-behavior: none;
   overflow-y: auto;
 }
 
 .mobileNavBar {
-  background-color: '#f8f9fa';
   display: flex;
   flex-direction: column;
   flex: 1;

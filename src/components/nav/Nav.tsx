@@ -29,7 +29,7 @@ export function Navbar() {
         <Button onClick={() => createThread()}>New chat</Button>
       </div>
       <div className='flex-1 mt-4'>{links}</div>
-      <div>
+      <div className=' sticky bottom-0 bg-white'>
         <UnstyledButton
           onClick={() => {
             setDrawerOpen(false);
@@ -54,14 +54,7 @@ export const MobileNavBar = () => {
   );
 
   return (
-    <Drawer
-      opened={isDrawerOpened}
-      onClose={() => setDrawerOpen(false)}
-      classNames={{
-        content: 'flex flex-1 flex-col h-full bg-gray-100',
-        body: 'flex flex-1',
-        header: 'bg-gray-100',
-      }}>
+    <Drawer opened={isDrawerOpened} onClose={() => setDrawerOpen(false)}>
       <div className={classes.mobileNavBar}>
         <div className='flex flex-col'>
           <Button h={44} onClick={() => createThread()}>
@@ -69,15 +62,15 @@ export const MobileNavBar = () => {
           </Button>
         </div>
         <div className='flex-1 grow-1 mt-4'>{links}</div>
-        <div>
-          <UnstyledButton
-            onClick={() => {
-              setDrawerOpen(false);
-              openSettings(true);
-            }}>
-            <IconSettings className='fill-white' />
-          </UnstyledButton>
-        </div>
+      </div>
+      <div className='sticky bottom-0 px-4 bg-white'>
+        <UnstyledButton
+          onClick={() => {
+            setDrawerOpen(false);
+            openSettings(true);
+          }}>
+          <IconSettings className='fill-white' />
+        </UnstyledButton>
       </div>
     </Drawer>
   );

@@ -40,7 +40,6 @@ export const ChatMessage = memo(({ text, owner }: ChatMessageProps) => {
 
         return (
           <SyntaxHighlighter
-            children={String(children)}
             language={match?.[1] ?? 'plaintext'}
             customStyle={{
               backgroundColor: 'black',
@@ -53,8 +52,9 @@ export const ChatMessage = memo(({ text, owner }: ChatMessageProps) => {
                 fontSize: '14px',
               },
             }}
-            style={oneDark}
-          />
+            style={oneDark}>
+            {String(children)}
+          </SyntaxHighlighter>
         );
       },
     }),
@@ -68,11 +68,9 @@ export const ChatMessage = memo(({ text, owner }: ChatMessageProps) => {
         <Text size='lg' fw={600} lh='2rem'>
           {owner === 'assistant' ? 'Assistant' : 'You'}
         </Text>
-        <Markdown
-          className={classes.chatdiv}
-          children={text}
-          components={components}
-        />
+        <Markdown className={classes.chatdiv} components={components}>
+          {text}
+        </Markdown>
       </div>
     </div>
   );
