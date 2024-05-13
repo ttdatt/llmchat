@@ -62,7 +62,7 @@ export const ChatMessage = memo(({ text, owner }: ChatMessageProps) => {
   );
 
   return (
-    <div className='flex flex-row gap-2 p-4'>
+    <section className='flex flex-row gap-2 p-4'>
       {Icon}
       <div className='flex flex-col overflow-x-auto'>
         <Text size='lg' fw={600} lh='2rem'>
@@ -72,6 +72,6 @@ export const ChatMessage = memo(({ text, owner }: ChatMessageProps) => {
           {text}
         </Markdown>
       </div>
-    </div>
+    </section>
   );
 });
