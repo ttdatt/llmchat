@@ -35,7 +35,7 @@
     "uuid": "^9.0.1"
   },
   "devDependencies": {
-    "@biomejs/biome": "1.7.0",
+    "@biomejs/biome": "1.7.3",
     "@tauri-apps/cli": ">=2.0.0-beta.13",
     "@types/lodash": "^4.17.0",
     "@types/react": "^18.2.15",
@@ -53,5 +53,5 @@
     "typescript": "^5.4.4",
     "vite": "^5.2.8"
   },
-  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
+  "packageManager": "yarn@1.22.22+sha256.c17d3797fb9a9115bf375e31bfd30058cac6bc9c3b8807a3d8cb2094794b51ca"
 }
