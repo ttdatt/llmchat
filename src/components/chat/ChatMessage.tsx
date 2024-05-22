@@ -7,12 +7,34 @@ import SyntaxHighlighter from 'react-syntax-highlighter/dist/esm/prism-async-lig
 import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import classes from './ChatMessage.module.css';
 import { memo, useMemo } from 'react';
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
+import 'katex/dist/katex.min.css';
 
 type ChatMessageProps = {
   text: Message['text'];
   owner: Message['owner'];
 };
-export const ChatMessage = memo(({ text, owner }: ChatMessageProps) => {
+
+export const preprocessLaTeX = (content: string) => {
+  // Replace block-level LaTeX delimiters \[ \] with $$ $$
+
+  const blockProcessedContent = content.replace(
+    /\\\[(.*?)\\\]/gs,
+    (_, equation) => `$$${equation}$$`,
+  );
+  // Replace inline LaTeX delimiters \( \) with $ $
+  const inlineProcessedContent = blockProcessedContent.replace(
+    /\\\((.*?)\\\)/gs,
+    (_, equation) => `$${equation}$`,
+  );
+  return inlineProcessedContent;
+};
+
+export const ChatMessage = memo(function ChatMessage({
+  text,
+  owner,
+}: ChatMessageProps) {
   const Icon = useMemo(() => {
     if (owner === 'assistant') {
       return <GptIcon />;
@@ -61,6 +83,8 @@ export const ChatMessage = memo(({ text, owner }: ChatMessageProps) => {
     [],
   );
 
+  const processedText = useMemo(() => preprocessLaTeX(text), [text]);
+
   return (
     <section className='flex flex-row gap-2 p-4'>
       {Icon}
@@ -68,8 +92,12 @@ export const ChatMessage = memo(({ text, owner }: ChatMessageProps) => {
         <Text size='lg' fw={600} lh='2rem'>
           {owner === 'assistant' ? 'Assistant' : 'You'}
         </Text>
-        <Markdown className={classes.chatdiv} components={components}>
-          {text}
+        <Markdown
+          className={classes.chatdiv}
+          components={components}
+          remarkPlugins={[remarkMath]}
+          rehypePlugins={[rehypeKatex]}>
+          {processedText}
         </Markdown>
       </div>
     </section>
