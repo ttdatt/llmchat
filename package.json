@@ -23,12 +23,15 @@
     "immer": "^10.0.4",
     "jotai": "^2.7.2",
     "jotai-immer": "^0.3.0",
+    "katex": "^0.16.10",
     "lodash": "^4.17.21",
     "openai": "^4.46.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-markdown": "^9.0.1",
     "react-syntax-highlighter": "^15.5.0",
+    "rehype-katex": "^7.0.0",
+    "remark-math": "^6.0.0",
     "uuid": "^9.0.1"
   },
   "devDependencies": {
