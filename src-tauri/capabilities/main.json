@@ -6,6 +6,15 @@
     "main"
   ],
   "permissions": [
+    "path:default",
+    "event:default",
+    "window:default",
+    "app:default",
+    "image:default",
+    "resources:default",
+    "menu:default",
+    "tray:default",
+    "shell:allow-open",
     "store:allow-get",
     "store:allow-set",
     "store:allow-save",
