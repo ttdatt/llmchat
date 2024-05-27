@@ -1,6 +1,5 @@
 import OpenAI from 'openai';
-import { Thread } from '@/types/Message';
-import { LlmModelClient } from '@/types/LlmTypes';
+import { GenerateTextParams, LlmModelClient } from '@/types/LlmTypes';
 import {
   finishStreamingMessagesAtom,
   llmTokenAtom,
@@ -10,6 +9,7 @@ import {
 import { atomStore } from '@/atom/store';
 import { notifications } from '@mantine/notifications';
 import { customInstructionsAtom } from '@/atom/atoms';
+
 // import fileText from '../../assets/msg.txt';
 // import codeText from '../assets/code.txt';
 
@@ -28,7 +28,11 @@ const initializeClient = (token: string) => {
   return openai;
 };
 
-const generateText = async (question: string, thread?: Thread) => {
+const generateText = async ({
+  question,
+  thread,
+  onFinish,
+}: GenerateTextParams) => {
   // const STEP = 10;
   // let offset = 0;
   // const r = await fetch(codeText);
@@ -82,6 +86,13 @@ const generateText = async (question: string, thread?: Thread) => {
     }
 
     atomStore.set(finishStreamingMessagesAtom, true);
+
+    // trigger sync to cloud
+    console.log('finished!!!');
+
+    if (typeof onFinish === 'function') {
+      onFinish();
+    }
   } catch (error) {
     if (error instanceof Error) {
       notifications.show({

@@ -11,6 +11,7 @@ import {
 } from '@/atom/atoms';
 import orderBy from 'lodash/orderBy';
 import { createNewThreadAtom } from '@/atom/derivedAtoms';
+import GoogleSSO from '../GoogleSSO';
 
 export function Navbar() {
   const threads = useAtomValue(threadsAtom);
@@ -37,6 +38,7 @@ export function Navbar() {
           }}>
           <IconSettings className='fill-white' />
         </UnstyledButton>
+        <GoogleSSO />
       </div>
     </div>
   );
@@ -77,6 +79,7 @@ export const MobileNavBar = () => {
           }}>
           <IconSettings className='fill-white' />
         </UnstyledButton>
+        <GoogleSSO />
       </div>
     </Drawer>
   );
