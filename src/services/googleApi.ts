@@ -105,10 +105,13 @@ export const getThreadByFileId = async (fileId: string) => {
 };
 
 export const getAllThreads = async () => {
+  const folderId = await findFolder(llmchatDir);
+  if (!folderId) return [];
+
   const params = new URLSearchParams();
   params.append(
     'q',
-    `name='${llmchatDir}' and mimeType='application/vnd.google-apps.folder'`,
+    `'${folderId}' in parents and name contains 'thread-' and trashed=false`,
   );
   const searchResponse = await fetch(
     `https://www.googleapis.com/drive/v3/files?${params}`,
@@ -118,24 +121,24 @@ export const getAllThreads = async () => {
       }),
     },
   );
-  const searchData = await searchResponse.json();
 
-  console.log('getAllThreads() searchData', searchData);
+  const searchData = await searchResponse.json();
+  console.log('getAllThreads() searchData:', searchData);
 
   return await Promise.all(
-    searchData.files.map(async ({ id }: { id: string }) => {
+    searchData?.files?.map(async ({ id }: { id: string }) => {
       return await getThreadByFileId(id);
-    }),
+    }) || [],
   );
 };
 
 export const saveThread = async (threadId: string) => {
   const thread = await db.threads.get(threadId);
 
-  const oldFileIds = await searchByThreadId(threadId);
-
   const folderId: string =
     (await findFolder(llmchatDir)) || (await createFolder(llmchatDir)) || '';
+
+  const oldFileIds = await searchByThreadId(threadId, folderId);
 
   const newFile = new Blob([JSON.stringify(thread)], { type: 'text/plain' });
   const metadata = {
@@ -165,6 +168,7 @@ export const saveThread = async (threadId: string) => {
     const result = await response.json();
     console.log('File saved to Drive:', result);
 
+    console.log('start delete:', oldFileIds);
     for (const fileId of oldFileIds) {
       await deleteByFileId(fileId);
     }
@@ -219,11 +223,11 @@ async function createFolder(name: string): Promise<string> {
   return data.id;
 }
 
-export const searchByThreadId = async (threadId: string) => {
+export const searchByThreadId = async (threadId: string, parentId: string) => {
   const params = new URLSearchParams();
   params.append(
     'q',
-    `'${llmchatDir}' in parents and name contains 'thread-${threadId}'`,
+    `'${parentId}' in parents and name contains 'thread-${threadId}'`,
   );
   const searchResponse = await fetch(
     `https://www.googleapis.com/drive/v3/files?${params}`,

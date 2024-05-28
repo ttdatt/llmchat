@@ -136,11 +136,13 @@ const sendMessageAtom = atom(null, async (get, set, message: string) => {
       question: message,
       thread: currentThread,
       onFinish: () => {
-        const postData: AddThread = {
-          type: 'add-thread',
-          threadId: currentThreadId,
-        };
-        worker.postMessage(postData);
+        if (get(currentUserAtom)) {
+          const postData: AddThread = {
+            type: 'add-thread',
+            threadId: currentThreadId,
+          };
+          worker.postMessage(postData);
+        }
       },
     });
     const msg: Message = {
@@ -158,17 +160,19 @@ const sendMessageAtom = atom(null, async (get, set, message: string) => {
   }
 });
 
-const deleteThreadAtom = atom(null, (_, set, threadId: string) => {
+const deleteThreadAtom = atom(null, (get, set, threadId: string) => {
   deleteThread(threadId);
   set(threadsAtom, (state) => {
     delete state[threadId];
   });
 
-  const postData: DeleteThread = {
-    type: 'delete-thread',
-    threadId,
-  };
-  worker.postMessage(postData);
+  if (get(currentUserAtom)) {
+    const postData: DeleteThread = {
+      type: 'delete-thread',
+      threadId,
+    };
+    worker.postMessage(postData);
+  }
 });
 
 const streamMessagesAtom = atom(null, (get, set, text: string) => {
