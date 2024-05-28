@@ -1,3 +1,4 @@
+import { compress, decompress } from './compression';
 import { generateUniqueId } from './crypto';
 import { db } from './indexedDb';
 
@@ -98,38 +99,43 @@ export const getThreadByFileId = async (fileId: string) => {
       }),
     },
   );
-  const fileContent = await response.json();
-  console.log('fileId', fileId);
-  console.log('\t fileContent', fileContent);
-  return fileContent;
+  const compressedData = await response.arrayBuffer();
+  console.log('getThreadByFileId ', fileId);
+  const decompressed = await decompress(compressedData);
+  return JSON.parse(decompressed);
 };
 
 export const getAllThreads = async () => {
-  const folderId = await findFolder(llmchatDir);
-  if (!folderId) return [];
+  try {
+    const folderId = await findFolder(llmchatDir);
+    if (!folderId) return [];
 
-  const params = new URLSearchParams();
-  params.append(
-    'q',
-    `'${folderId}' in parents and name contains 'thread-' and trashed=false`,
-  );
-  const searchResponse = await fetch(
-    `https://www.googleapis.com/drive/v3/files?${params}`,
-    {
-      headers: new Headers({
-        Authorization: `Bearer ${await getAccessToken()}`,
-      }),
-    },
-  );
+    const params = new URLSearchParams();
+    params.append(
+      'q',
+      `'${folderId}' in parents and name contains 'thread-' and trashed=false`,
+    );
+    const searchResponse = await fetch(
+      `https://www.googleapis.com/drive/v3/files?${params}`,
+      {
+        headers: new Headers({
+          Authorization: `Bearer ${await getAccessToken()}`,
+        }),
+      },
+    );
 
-  const searchData = await searchResponse.json();
-  console.log('getAllThreads() searchData:', searchData);
+    const searchData = await searchResponse.json();
+    console.log('getAllThreads() searchData:', searchData);
 
-  return await Promise.all(
-    searchData?.files?.map(async ({ id }: { id: string }) => {
-      return await getThreadByFileId(id);
-    }) || [],
-  );
+    return await Promise.all(
+      searchData?.files?.map(async ({ id }: { id: string }) => {
+        return await getThreadByFileId(id);
+      }) || [],
+    );
+  } catch (e) {
+    console.error(e);
+  }
+  return [];
 };
 
 export const saveThread = async (threadId: string) => {
@@ -140,10 +146,11 @@ export const saveThread = async (threadId: string) => {
 
   const oldFileIds = await searchByThreadId(threadId, folderId);
 
-  const newFile = new Blob([JSON.stringify(thread)], { type: 'text/plain' });
+  const compressedData = await compress(JSON.stringify(thread));
+  const newFile = new Blob([compressedData], { type: 'text/plain' });
   const metadata = {
     name: `thread-${threadId}`,
-    mimeType: 'text/plain',
+    mimeType: 'application/gzip',
     parents: [folderId],
   };
 
@@ -253,7 +260,10 @@ export const deleteByFileId = async (fileId: string) => {
 };
 
 export const deleteThread = async (threadId: string) => {
-  const fileIds = await searchByThreadId(threadId);
+  const folderId = await findFolder(llmchatDir);
+  if (!folderId) return;
+
+  const fileIds = await searchByThreadId(threadId, folderId);
   for (const fileId of fileIds) {
     await deleteByFileId(fileId);
   }
