@@ -3,12 +3,7 @@ import { loginRedirect } from '@/services/googleApi';
 import { db } from '@/services/indexedDb';
 import { isWeb } from '@/services/platform';
 import { Avatar, Menu, UnstyledButton, rem } from '@mantine/core';
-import {
-  IconBrandGoogle,
-  IconLogin,
-  IconLogout,
-  IconSettings,
-} from '@tabler/icons-react';
+import { IconLogin, IconLogout, IconSettings } from '@tabler/icons-react';
 import { useAtom } from 'jotai';
 
 type Props = {
