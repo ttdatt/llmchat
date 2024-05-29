@@ -78,8 +78,8 @@ export async function handleParamAccessToken(
 }
 
 export async function getAccessToken() {
-  const user = (await db.user.toArray())[0];
-  return user.accessToken;
+  const user = (await db.user.toArray())?.[0];
+  return user?.accessToken;
 }
 
 export const fetchProfile = async (accessToken?: string | undefined | null) => {

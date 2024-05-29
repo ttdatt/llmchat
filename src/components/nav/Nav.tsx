@@ -1,7 +1,6 @@
-import { Button, Drawer, UnstyledButton } from '@mantine/core';
+import { Button, Drawer } from '@mantine/core';
 import classes from './Nav.module.css';
 import { NavItem } from './NavItem';
-import { IconSettings } from '@tabler/icons-react';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import {
   currentThreadIdAtom,
@@ -11,7 +10,7 @@ import {
 } from '@/atom/atoms';
 import orderBy from 'lodash/orderBy';
 import { createNewThreadAtom } from '@/atom/derivedAtoms';
-import GoogleSSO from '../GoogleSSO';
+import { SettingsButton } from './SettingsButton';
 
 export function Navbar() {
   const threads = useAtomValue(threadsAtom);
@@ -24,6 +23,11 @@ export function Navbar() {
     (t) => <NavItem key={t.id} thread={t} currentThreadId={currentThreadId} />,
   );
 
+  const onClickSettings = () => {
+    setDrawerOpen(false);
+    openSettings(true);
+  };
+
   return (
     <div className={classes.navbar}>
       <div className='flex flex-col'>
@@ -31,14 +35,7 @@ export function Navbar() {
       </div>
       <div className='flex-1 mt-4'>{links}</div>
       <div className=' sticky bottom-0 flex py-2 items-center bg-white'>
-        <UnstyledButton
-          onClick={() => {
-            setDrawerOpen(false);
-            openSettings(true);
-          }}>
-          <IconSettings className='fill-white' />
-        </UnstyledButton>
-        <GoogleSSO />
+        <SettingsButton onClickSettings={onClickSettings} />
       </div>
     </div>
   );
@@ -54,6 +51,11 @@ export const MobileNavBar = () => {
   const links = orderBy(Object.values(threads), 'timestamp', 'desc').map(
     (t) => <NavItem key={t.id} thread={t} currentThreadId={currentThreadId} />,
   );
+
+  const onClickSettings = () => {
+    setDrawerOpen(false);
+    openSettings(true);
+  };
 
   return (
     <Drawer
@@ -72,14 +74,7 @@ export const MobileNavBar = () => {
         <div className='flex-1 grow-1 mt-4'>{links}</div>
       </div>
       <div className='sticky bottom-0 px-4 py-2 flex items-center bg-white'>
-        <UnstyledButton
-          onClick={() => {
-            setDrawerOpen(false);
-            openSettings(true);
-          }}>
-          <IconSettings className='fill-white' />
-        </UnstyledButton>
-        <GoogleSSO />
+        <SettingsButton onClickSettings={onClickSettings} />
       </div>
     </Drawer>
   );
