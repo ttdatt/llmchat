@@ -1,6 +1,7 @@
 import { compress, decompress } from './compression';
 import { generateUniqueId } from './crypto';
 import { db } from './indexedDb';
+import { isWeb } from './platform';
 
 const llmchatDir = 'llmchat';
 const clientId =
@@ -41,7 +42,11 @@ export function loginRedirect() {
 
   const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?${urlSearchParams.toString()}`;
 
-  window.location.href = authUrl;
+  if (isWeb) {
+    window.location.href = authUrl;
+  } else {
+    throw new Error('Unsupported!');
+  }
 }
 
 export async function handleParamAccessToken(

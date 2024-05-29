@@ -1,5 +1,5 @@
 import { currentUserAtom } from '@/atom/atoms';
-import { loginRedirect, searchByThreadId } from '@/services/googleApi';
+import { loginRedirect } from '@/services/googleApi';
 import { db } from '@/services/indexedDb';
 import { Avatar } from '@mantine/core';
 import { useAtom } from 'jotai';
@@ -17,16 +17,9 @@ const GoogleSSO: React.FC = () => {
     setCurrentUser(undefined);
   };
 
-  const onClicKTest = async () => {
-    await searchByThreadId('');
-  };
-
   return currentUser?.picture ? (
     <>
       <Avatar src={currentUser.picture} />
-      <button type='button' onClick={onClicKTest}>
-        Test
-      </button>
       <button type='button' onClick={onClickSignOut}>
         Sign out
       </button>

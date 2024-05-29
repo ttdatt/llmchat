@@ -1,6 +1,5 @@
 import Anthropic from '@anthropic-ai/sdk';
-import { Thread } from '@/types/Message';
-import { LlmModelClient } from '@/types/LlmTypes';
+import { GenerateTextParams, LlmModelClient } from '@/types/LlmTypes';
 import {
   finishStreamingMessagesAtom,
   llmTokenAtom,
@@ -27,7 +26,7 @@ const initializeClient = (token: string) => {
   return anthropic;
 };
 
-const generateText = async (question: string, thread?: Thread) => {
+const generateText = async ({ question, thread }: GenerateTextParams) => {
   // const STEP = 10;
   // let offset = 0;
   // const r = await fetch(codeText);

@@ -1,10 +1,10 @@
 import { Thread } from '@/types/Message';
 import { db } from './indexedDb';
 import { Store } from '@tauri-apps/plugin-store';
+import { isWeb } from './platform';
 
 let store: Store;
-// @ts-ignore
-const isWeb = !globalThis.__TAURI_INTERNALS__;
+
 if (!isWeb) {
   store = new Store('threads.txt');
 }
