@@ -3,6 +3,7 @@ import { atomWithImmer, withImmer } from 'jotai-immer';
 import { Thread } from '@/types/Message';
 import { LlmTokensType, models } from '@/types/LlmTypes';
 import { atomWithStorage } from 'jotai/utils';
+import { User } from '@/types/User';
 
 const customInstructionsAtom = atomWithStorage<string>(
   'instructions',
@@ -30,8 +31,11 @@ const selectedModelAtom = atomWithStorage(
 );
 const drawerAtom = atom(false);
 
+const currentUserAtom = atom<User | undefined>(undefined);
+
 export {
   currentThreadIdAtom,
+  currentUserAtom,
   threadsAtom,
   isStreamingAtom,
   modalVisibleAtom,

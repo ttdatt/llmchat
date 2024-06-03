@@ -7,7 +7,9 @@ const mobile = !!/android|ios/.exec(process.env.TAURI_ENV_PLATFORM);
 // https://vitejs.dev/config/
 export default defineConfig(async () => ({
   plugins: [react()],
-
+  worker: {
+    // format: 'es',
+  },
   resolve: {
     alias: {
       '@': '/src',

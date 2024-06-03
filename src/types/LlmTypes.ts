@@ -1,7 +1,12 @@
 import { Thread } from './Message';
 
+export type GenerateTextParams = {
+  question?: string;
+  thread?: Thread;
+  onFinish?: () => Promise<void> | void;
+};
 type LlmModelClient = {
-  generateText: (question: string, thread: Thread) => Promise<void>;
+  generateText: (params: GenerateTextParams) => Promise<void>;
 };
 
 enum LlmType {

@@ -6,7 +6,7 @@ import { llmClient as claudeClient } from '@/services/claude';
 import {
   clearAllThreads,
   deleteThread,
-  loadThreads,
+  loadLocalThreads,
   storeTheads,
 } from '@/services/threadStorage';
 import { v4 as uuidv4 } from 'uuid';
@@ -19,7 +19,17 @@ import {
   isStreamingAtom,
   llmTokensAtom,
   selectedModelAtom,
+  currentUserAtom,
 } from './atoms';
+import {
+  getAllThreads,
+  getLoggedInUser,
+  handleParamAccessToken,
+  logout,
+} from '@/services/googleApi';
+import { mergeThreads } from '@/services/mergeThreads';
+import { worker } from '@/workerInstance';
+import { AddThread, DeleteThread } from '@/types/Worker';
 
 let llmClient: LlmModelClient;
 
@@ -69,8 +79,33 @@ const initAtom = atom(null, async (get, set) => {
   if (model.type === LlmType.OpenAI) llmClient = openaiClient;
   else if (model.type === LlmType.Claude) llmClient = claudeClient;
 
-  const threads = await loadThreads();
-  if (threads) set(threadsAtom, threads);
+  // Check if redirect from Google Authentication:
+  const params = new URLSearchParams(location.hash.substring(1));
+  const accessTokenOnParam = params.get('access_token');
+  if (accessTokenOnParam) {
+    await handleParamAccessToken(params, accessTokenOnParam);
+    return;
+  }
+
+  const currentUser = await getLoggedInUser();
+  if (!currentUser) {
+    await logout();
+    const threads = await loadLocalThreads();
+    if (threads) set(threadsAtom, threads);
+    return;
+  }
+
+  set(currentUserAtom, currentUser);
+  console.log('user', currentUser);
+
+  const localThreads = await loadLocalThreads();
+  const remoteThreads = await getAllThreads();
+
+  const mergedThreads = mergeThreads(
+    Object.values(localThreads || {}),
+    remoteThreads,
+  );
+  set(threadsAtom, mergedThreads);
 });
 
 const createNewThreadAtom = atom(null, (get, set) => {
@@ -97,7 +132,19 @@ const sendMessageAtom = atom(null, async (get, set, message: string) => {
 
   if (currentThreadId) {
     const currentThread = get(threadsAtom)[currentThreadId];
-    llmClient.generateText(message, currentThread);
+    llmClient.generateText({
+      question: message,
+      thread: currentThread,
+      onFinish: () => {
+        if (get(currentUserAtom)) {
+          const postData: AddThread = {
+            type: 'add-thread',
+            threadId: currentThreadId,
+          };
+          worker.postMessage(postData);
+        }
+      },
+    });
     const msg: Message = {
       id: uuidv4(),
       owner: 'user',
@@ -113,11 +160,19 @@ const sendMessageAtom = atom(null, async (get, set, message: string) => {
   }
 });
 
-const deleteThreadAtom = atom(null, (_, set, threadId: string) => {
+const deleteThreadAtom = atom(null, (get, set, threadId: string) => {
   deleteThread(threadId);
   set(threadsAtom, (state) => {
     delete state[threadId];
   });
+
+  if (get(currentUserAtom)) {
+    const postData: DeleteThread = {
+      type: 'delete-thread',
+      threadId,
+    };
+    worker.postMessage(postData);
+  }
 });
 
 const streamMessagesAtom = atom(null, (get, set, text: string) => {
