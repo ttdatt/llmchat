@@ -75,7 +75,13 @@ const generateText = async ({ question, thread }: GenerateTextParams) => {
 
     for await (const messageStreamEvent of stream) {
       if (messageStreamEvent.type === 'content_block_delta') {
-        atomStore.set(streamMessagesAtom, messageStreamEvent.delta.text);
+        if (messageStreamEvent.delta.type === 'text_delta')
+          atomStore.set(streamMessagesAtom, messageStreamEvent.delta.text);
+        else
+          atomStore.set(
+            streamMessagesAtom,
+            messageStreamEvent.delta.partial_json,
+          );
       }
     }
     atomStore.set(finishStreamingMessagesAtom, null);
