@@ -20,7 +20,11 @@ async function readRequestBody(request) {
 		return await request.json();
 	}
 
-	if (contentType.includes('application/text') || contentType.includes('text/plain') || contentType.includes('text/html')) {
+	if (
+		contentType.includes('application/text') ||
+		contentType.includes('text/plain') ||
+		contentType.includes('text/html')
+	) {
 		return request.text();
 	}
 
@@ -54,7 +58,9 @@ async function handleOptions(request) {
 		return new Response(null, {
 			headers: {
 				...corsHeaders,
-				'Access-Control-Allow-Headers': request.headers.get('Access-Control-Request-Headers'),
+				'Access-Control-Allow-Headers': request.headers.get(
+					'Access-Control-Request-Headers',
+				),
 			},
 		});
 	}
@@ -74,7 +80,14 @@ export default {
 		}
 
 		const data = await readRequestBody(request);
-		if (!data || !data.model || !data.token || !data.customInstructions || !data.thread || !data.question) {
+		if (
+			!data ||
+			!data.model ||
+			!data.token ||
+			!data.customInstructions ||
+			!data.thread ||
+			!data.question
+		) {
 			return new Response('Missing required fields', {
 				status: 400,
 				headers: { ...corsHeaders },
@@ -113,13 +126,15 @@ export default {
 						if (messageStreamEvent.delta.type === 'text_delta') {
 							writer.write(textEncoder.encode(messageStreamEvent.delta.text));
 						} else {
-							writer.write(textEncoder.encode(messageStreamEvent.delta.partial_json));
+							writer.write(
+								textEncoder.encode(messageStreamEvent.delta.partial_json),
+							);
 						}
 					}
 				}
 
 				writer.close();
-			})()
+			})(),
 		);
 
 		const response = new Response(readable);

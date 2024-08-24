@@ -10,31 +10,31 @@ import { Notifications } from '@mantine/notifications';
 import { useMobile } from './hooks/useMobile';
 
 const MainPage = () => {
-  const init = useSetAtom(initAtom);
-  const isMobile = useMobile();
+	const init = useSetAtom(initAtom);
+	const isMobile = useMobile();
 
-  useEffect(() => {
-    init();
-  }, [init]);
+	useEffect(() => {
+		init();
+	}, [init]);
 
-  return (
-    <div className='h-dvh w-screen flex flex-row'>
-      {isMobile ? <MobileNavBar /> : <Navbar />}
-      <MessageArea />
-      <Settings />
-    </div>
-  );
+	return (
+		<div className='h-dvh w-screen flex flex-row'>
+			{isMobile ? <MobileNavBar /> : <Navbar />}
+			<MessageArea />
+			<Settings />
+		</div>
+	);
 };
 
 function App() {
-  return (
-    <MantineProvider>
-      <Provider store={atomStore}>
-        <Notifications />
-        <MainPage />
-      </Provider>
-    </MantineProvider>
-  );
+	return (
+		<MantineProvider>
+			<Provider store={atomStore}>
+				<Notifications />
+				<MainPage />
+			</Provider>
+		</MantineProvider>
+	);
 }
 
 export default App;

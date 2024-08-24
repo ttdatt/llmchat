@@ -6,13 +6,13 @@ import '@mantine/notifications/styles.css';
 import './styles.css';
 
 declare global {
-  interface Window {
-    __TAURI_INTERNALS__: Record<string, unknown>;
-  }
+	interface Window {
+		__TAURI_INTERNALS__: Record<string, unknown>;
+	}
 }
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+	<React.StrictMode>
+		<App />
+	</React.StrictMode>,
 );

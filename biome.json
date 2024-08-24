@@ -1,32 +1,32 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.8.3/schema.json",
-  "organizeImports": {
-    "enabled": true
-  },
-  "files": {
-    "ignore": ["src-tauri/*", "dist", "node_modules"]
-  },
-  "linter": {
-    "enabled": true,
-    "rules": {
-      "recommended": true,
-      "style": {
-        "useImportType": "off"
-      },
-      "a11y": {
-        "useKeyWithClickEvents": "off"
-      }
-    }
-  },
-  "formatter": {
-    "indentStyle": "space"
-  },
-  "javascript": {
-    "formatter": {
-      "indentStyle": "space",
-      "jsxQuoteStyle": "single",
-      "quoteStyle": "single",
-      "bracketSameLine": true
-    }
-  }
+	"$schema": "https://biomejs.dev/schemas/1.8.3/schema.json",
+	"organizeImports": {
+		"enabled": false
+	},
+	"files": {
+		"ignore": ["src-tauri/*", "dist", "node_modules"]
+	},
+	"linter": {
+		"enabled": true,
+		"rules": {
+			"recommended": true,
+			"style": {
+				"useImportType": "off"
+			},
+			"a11y": {
+				"useKeyWithClickEvents": "off"
+			}
+		}
+	},
+	"formatter": {
+		"indentStyle": "tab"
+	},
+	"javascript": {
+		"formatter": {
+			"indentStyle": "tab",
+			"jsxQuoteStyle": "single",
+			"quoteStyle": "single",
+			"bracketSameLine": true
+		}
+	}
 }

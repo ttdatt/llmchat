@@ -1,10 +1,10 @@
 import OpenAI from 'openai';
 import { GenerateTextParams, LlmModelClient } from '@/types/LlmTypes';
 import {
-  finishStreamingMessagesAtom,
-  llmTokenAtom,
-  modelAtom,
-  streamMessagesAtom,
+	finishStreamingMessagesAtom,
+	llmTokenAtom,
+	modelAtom,
+	streamMessagesAtom,
 } from '@/atom/derivedAtoms';
 import { atomStore } from '@/atom/store';
 import { notifications } from '@mantine/notifications';
@@ -16,97 +16,97 @@ import { customInstructionsAtom } from '@/atom/atoms';
 let openai: undefined | OpenAI;
 
 const initializeClient = (token: string) => {
-  openai = new OpenAI({
-    apiKey: token,
-    dangerouslyAllowBrowser: true,
-  });
+	openai = new OpenAI({
+		apiKey: token,
+		dangerouslyAllowBrowser: true,
+	});
 
-  atomStore.sub(llmTokenAtom, async () => {
-    if (!openai) return;
-    openai.apiKey = (await atomStore.get(llmTokenAtom)) ?? '';
-  });
-  return openai;
+	atomStore.sub(llmTokenAtom, async () => {
+		if (!openai) return;
+		openai.apiKey = (await atomStore.get(llmTokenAtom)) ?? '';
+	});
+	return openai;
 };
 
 const generateText = async ({
-  question,
-  thread,
-  onFinish,
+	question,
+	thread,
+	onFinish,
 }: GenerateTextParams) => {
-  // const STEP = 10;
-  // let offset = 0;
-  // const r = await fetch(codeText);
-  // const text = await r.text();
+	// const STEP = 10;
+	// let offset = 0;
+	// const r = await fetch(codeText);
+	// const text = await r.text();
 
-  // const inte = setInterval(() => {
-  //   atomStore.set(streamMessagesAtom, text.slice(offset, offset + STEP));
-  //   offset += STEP;
-  //   if (offset >= text.length) {
-  //     clearInterval(inte);
-  //     offset = 0;
-  //     atomStore.set(finishStreamingMessagesAtom, true);
-  //   }
-  // }, 10);
-  // return;
+	// const inte = setInterval(() => {
+	//   atomStore.set(streamMessagesAtom, text.slice(offset, offset + STEP));
+	//   offset += STEP;
+	//   if (offset >= text.length) {
+	//     clearInterval(inte);
+	//     offset = 0;
+	//     atomStore.set(finishStreamingMessagesAtom, true);
+	//   }
+	// }, 10);
+	// return;
 
-  if (!question || !thread) return;
+	if (!question || !thread) return;
 
-  if (!openai) {
-    const token = await atomStore.get(llmTokenAtom);
-    if (!token) return;
-    openai = initializeClient(token);
-  }
+	if (!openai) {
+		const token = await atomStore.get(llmTokenAtom);
+		if (!token) return;
+		openai = initializeClient(token);
+	}
 
-  const model = atomStore.get(modelAtom).id;
-  const customInstructions = atomStore.get(customInstructionsAtom);
+	const model = atomStore.get(modelAtom).id;
+	const customInstructions = atomStore.get(customInstructionsAtom);
 
-  try {
-    const stream = await openai.chat.completions.create({
-      model,
-      temperature: 0.5,
-      messages: [
-        {
-          role: 'system',
-          content: customInstructions,
-        },
-        ...Object.values(thread.messages).map((x) => ({
-          role: x.owner,
-          content: x.text,
-        })),
-        {
-          role: 'user',
-          content: question,
-        },
-      ],
-      stream: true,
-    });
+	try {
+		const stream = await openai.chat.completions.create({
+			model,
+			temperature: 0.5,
+			messages: [
+				{
+					role: 'system',
+					content: customInstructions,
+				},
+				...Object.values(thread.messages).map((x) => ({
+					role: x.owner,
+					content: x.text,
+				})),
+				{
+					role: 'user',
+					content: question,
+				},
+			],
+			stream: true,
+		});
 
-    for await (const chunk of stream) {
-      atomStore.set(streamMessagesAtom, chunk.choices[0]?.delta?.content || '');
-    }
+		for await (const chunk of stream) {
+			atomStore.set(streamMessagesAtom, chunk.choices[0]?.delta?.content || '');
+		}
 
-    atomStore.set(finishStreamingMessagesAtom, true);
+		atomStore.set(finishStreamingMessagesAtom, true);
 
-    // trigger sync to cloud
-    console.log('finished!!!');
+		// trigger sync to cloud
+		console.log('finished!!!');
 
-    if (typeof onFinish === 'function') {
-      onFinish();
-    }
-  } catch (error) {
-    if (error instanceof Error) {
-      notifications.show({
-        title: 'Error',
-        message: error.message,
-        color: 'red',
-        autoClose: 10000,
-      });
-    }
-  }
+		if (typeof onFinish === 'function') {
+			onFinish();
+		}
+	} catch (error) {
+		if (error instanceof Error) {
+			notifications.show({
+				title: 'Error',
+				message: error.message,
+				color: 'red',
+				autoClose: 10000,
+			});
+		}
+	}
 };
 
 const llmClient: LlmModelClient = {
-  generateText,
+	generateText,
 };
 
 export { llmClient };
