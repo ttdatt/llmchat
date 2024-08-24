@@ -85,7 +85,6 @@ const generateText = async ({ question, thread, onFinish }: GenerateTextParams) 
 
 		// trigger sync to cloud
 		console.log('finished!!!');
-
 		if (typeof onFinish === 'function') {
 			onFinish();
 		}

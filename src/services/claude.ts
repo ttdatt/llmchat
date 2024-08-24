@@ -9,7 +9,7 @@ import { atomStore } from '@/atom/store';
 import { notifications } from '@mantine/notifications';
 import { customInstructionsAtom } from '@/atom/atoms';
 
-const generateText = async ({ question, thread }: GenerateTextParams) => {
+const generateText = async ({ question, thread, onFinish }: GenerateTextParams) => {
 	if (!question || !thread) return;
 
 	const model = atomStore.get(modelAtom).id;
@@ -17,12 +17,13 @@ const generateText = async ({ question, thread }: GenerateTextParams) => {
 	const token = atomStore.get(llmTokenAtom);
 
 	try {
-		const response = await fetch('https://dawn-shape-88ec.trantiendat1508.workers.dev/', {
+		const response = await fetch('https://icy-night-f14d.trantiendat1508.workers.dev/', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
 			},
 			body: JSON.stringify({
+				stream: false,
 				token,
 				model,
 				question,
@@ -46,6 +47,9 @@ const generateText = async ({ question, thread }: GenerateTextParams) => {
 		}
 
 		atomStore.set(finishStreamingMessagesAtom, true);
+
+		console.log('finished!!!');
+		if (typeof onFinish === 'function') onFinish();
 	} catch (error) {
 		if (error instanceof Error) {
 			notifications.show({

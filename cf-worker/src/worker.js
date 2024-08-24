@@ -9,6 +9,8 @@
  */
 
 import Anthropic from '@anthropic-ai/sdk';
+const baseURL =
+	'https://gateway.ai.cloudflare.com/v1/902f20ca87daefc7e820749f7ea592e9/dat-anthropic-gateway/anthropic';
 
 async function readRequestBody(request) {
 	const contentType = request.headers.get('content-type');
@@ -48,49 +50,25 @@ const corsHeaders = {
 	'Access-Control-Allow-Headers': 'Content-Type',
 };
 
-async function handleOptions(request) {
-	if (
-		request.headers.get('Origin') !== null &&
-		request.headers.get('Access-Control-Request-Method') !== null &&
-		request.headers.get('Access-Control-Request-Headers') !== null
-	) {
-		// Handle CORS preflight requests.
-		return new Response(null, {
-			status: 204,
-			headers: { ...corsHeaders },
-		});
-	}
-	// Handle standard OPTIONS request.
-	return new Response(null, {
-		headers: {
-			Allow: 'GET, HEAD, POST, OPTIONS',
-		},
-	});
-}
-
 export default {
 	async fetch(request, _env, ctx) {
 		if (request.method === 'OPTIONS') {
 			// Handle CORS preflight requests
-			return handleOptions(request);
+			return new Response(null, {
+				status: 204,
+				headers: { ...corsHeaders },
+			});
 		}
 
 		const data = await readRequestBody(request);
-		if (
-			!data ||
-			!data.model ||
-			!data.token ||
-			!data.customInstructions ||
-			!data.thread ||
-			!data.question
-		) {
+		if (!data || !data.model || !data.token || !data.thread || !data.question) {
 			return new Response('Missing required fields', {
 				status: 400,
 				headers: { ...corsHeaders },
 			});
 		}
 
-		const client = new Anthropic({ apiKey: data.token });
+		const client = new Anthropic({ apiKey: data.token, baseURL });
 
 		const { readable, writable } = new TransformStream();
 		const writer = writable.getWriter();
@@ -98,43 +76,78 @@ export default {
 
 		ctx.waitUntil(
 			(async () => {
-				const stream = await client.messages.create({
-					model: data.model,
-					max_tokens: 1024,
-					temperature: 0.5,
-					system: data.customInstructions,
-					messages: [
-						...Object.values(data.thread.messages).map((x) => ({
-							role: x.owner,
-							content: x.text,
-						})),
-						{
-							role: 'user',
-							content: data.question,
-						},
-					],
-					stream: true,
-				});
+				try {
+					if (data.stream) {
+						const stream = await client.messages.create({
+							model: data.model,
+							max_tokens: 1024,
+							temperature: 0.5,
+							system: data.customInstructions,
+							messages: [
+								...Object.values(data.thread.messages).map((x) => ({
+									role: x.owner,
+									content: x.text,
+								})),
+								{
+									role: 'user',
+									content: data.question,
+								},
+							],
+							stream: true,
+						});
 
-				// loop over the data as it is streamed and write to the writeable
-				for await (const messageStreamEvent of stream) {
-					if (messageStreamEvent.type === 'content_block_delta') {
-						if (messageStreamEvent.delta.type === 'text_delta') {
-							writer.write(textEncoder.encode(messageStreamEvent.delta.text));
-						} else {
-							writer.write(textEncoder.encode(messageStreamEvent.delta.partial_json));
+						// loop over the data as it is streamed and write to the writeable
+						for await (const messageStreamEvent of stream) {
+							if (messageStreamEvent.type === 'content_block_delta') {
+								if (messageStreamEvent.delta.type === 'text_delta') {
+									writer.write(textEncoder.encode(messageStreamEvent.delta.text));
+								} else {
+									writer.write(textEncoder.encode(messageStreamEvent.delta.partial_json));
+								}
+							}
 						}
+					} else {
+						const response = await fetch(
+							'https://gateway.ai.cloudflare.com/v1/902f20ca87daefc7e820749f7ea592e9/dat-anthropic-gateway/anthropic/v1/messages',
+							{
+								method: 'POST',
+								headers: {
+									'x-api-key': data.token,
+									'anthropic-version': '2023-06-01',
+									'content-type': 'application/json',
+								},
+								body: JSON.stringify({
+									model: data.model,
+									max_tokens: 1024,
+									temperature: 0.5,
+									system: data.customInstructions,
+									messages: [
+										...Object.values(data.thread.messages).map((x) => ({
+											role: x.owner,
+											content: x.text,
+										})),
+										{
+											role: 'user',
+											content: data.question,
+										},
+									],
+								}),
+							},
+						);
+						const json = await response.json();
+						writer.write(textEncoder.encode(JSON.stringify(json)));
 					}
+					writer.close();
+				} catch (e) {
+					writer.write(textEncoder.encode(JSON.stringify({ error: e.message })));
+					writer.close();
 				}
-
-				writer.close();
 			})(),
 		);
 
-		const response = new Response(readable, {
+		return new Response(readable, {
 			status: 200,
 			headers: { ...corsHeaders, 'Content-Type': 'text/plain' },
 		});
-		return response;
 	},
 };
