@@ -6,15 +6,12 @@ export const mergeThreads = (
 	localThreads: Thread[] | null | undefined,
 	remoteThreads: Thread[] | null | undefined,
 ) => {
-	const combinedThreads = [
-		...(localThreads || []),
-		...(remoteThreads || []),
-	].filter(Boolean) as Thread[];
+	const combinedThreads = [...(localThreads || []), ...(remoteThreads || [])].filter(
+		Boolean,
+	) as Thread[];
 
 	// Sort combined threads by timestamp first
-	combinedThreads.sort(
-		(a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime(),
-	);
+	combinedThreads.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
 
 	const threadMap: Record<string, Thread> = {};
 	for (const thread of combinedThreads) {

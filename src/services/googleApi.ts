@@ -4,8 +4,7 @@ import { db } from './indexedDb';
 import { isWeb } from './platform';
 
 const llmchatDir = 'llmchat';
-const clientId =
-	'168012287860-sm87jkbh8uvmia8tf94uec15sjcgg8tt.apps.googleusercontent.com';
+const clientId = '168012287860-sm87jkbh8uvmia8tf94uec15sjcgg8tt.apps.googleusercontent.com';
 const scope = [
 	'https://www.googleapis.com/auth/userinfo.profile',
 	'https://www.googleapis.com/auth/userinfo.email',
@@ -49,14 +48,10 @@ export function loginRedirect() {
 	}
 }
 
-export async function handleParamAccessToken(
-	params: URLSearchParams,
-	accessToken: string,
-) {
+export async function handleParamAccessToken(params: URLSearchParams, accessToken: string) {
 	const tokenType = params.get('token_type') || '';
 	const expiresIn = params.get('expires_in');
-	const expiryTime =
-		new Date().getTime() + Number.parseInt(expiresIn || '0') * 1000;
+	const expiryTime = new Date().getTime() + Number.parseInt(expiresIn || '0') * 1000;
 	const scope = params.get('scope') || '';
 	const authUser = params.get('authuser') || '';
 
@@ -83,27 +78,21 @@ export async function getAccessToken() {
 }
 
 export const fetchProfile = async (accessToken?: string | undefined | null) => {
-	const response = await fetch(
-		'https://www.googleapis.com/oauth2/v1/userinfo?alt=json',
-		{
-			headers: {
-				Authorization: `Bearer ${accessToken || (await getAccessToken())}`,
-			},
+	const response = await fetch('https://www.googleapis.com/oauth2/v1/userinfo?alt=json', {
+		headers: {
+			Authorization: `Bearer ${accessToken || (await getAccessToken())}`,
 		},
-	);
+	});
 	const data = await response.json();
 	return { email: data.email, picture: data.picture };
 };
 
 export const getThreadByFileId = async (fileId: string) => {
-	const response = await fetch(
-		`https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`,
-		{
-			headers: new Headers({
-				Authorization: `Bearer ${await getAccessToken()}`,
-			}),
-		},
-	);
+	const response = await fetch(`https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`, {
+		headers: new Headers({
+			Authorization: `Bearer ${await getAccessToken()}`,
+		}),
+	});
 	const compressedData = await response.arrayBuffer();
 	console.log('getThreadByFileId ', fileId);
 	const decompressed = await decompress(compressedData);
@@ -116,18 +105,12 @@ export const getAllThreads = async () => {
 		if (!folderId) return [];
 
 		const params = new URLSearchParams();
-		params.append(
-			'q',
-			`'${folderId}' in parents and name contains 'thread-' and trashed=false`,
-		);
-		const searchResponse = await fetch(
-			`https://www.googleapis.com/drive/v3/files?${params}`,
-			{
-				headers: new Headers({
-					Authorization: `Bearer ${await getAccessToken()}`,
-				}),
-			},
-		);
+		params.append('q', `'${folderId}' in parents and name contains 'thread-' and trashed=false`);
+		const searchResponse = await fetch(`https://www.googleapis.com/drive/v3/files?${params}`, {
+			headers: new Headers({
+				Authorization: `Bearer ${await getAccessToken()}`,
+			}),
+		});
 
 		const searchData = await searchResponse.json();
 		console.log('getAllThreads() searchData:', searchData);
@@ -146,8 +129,7 @@ export const getAllThreads = async () => {
 export const saveThread = async (threadId: string) => {
 	const thread = await db.threads.get(threadId);
 
-	const folderId: string =
-		(await findFolder(llmchatDir)) || (await createFolder(llmchatDir)) || '';
+	const folderId: string = (await findFolder(llmchatDir)) || (await createFolder(llmchatDir)) || '';
 
 	const oldFileIds = await searchByThreadId(threadId, folderId);
 
@@ -160,10 +142,7 @@ export const saveThread = async (threadId: string) => {
 	};
 
 	const form = new FormData();
-	form.append(
-		'metadata',
-		new Blob([JSON.stringify(metadata)], { type: 'application/json' }),
-	);
+	form.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
 	form.append('file', newFile);
 
 	try {
@@ -195,16 +174,13 @@ async function findFolder(name: string): Promise<string | null> {
 		fields: 'files(id,name)',
 	});
 
-	const response = await fetch(
-		`https://www.googleapis.com/drive/v3/files?${params.toString()}`,
-		{
-			method: 'GET',
-			headers: {
-				Authorization: `Bearer ${await getAccessToken()}`,
-				'Content-Type': 'application/json',
-			},
+	const response = await fetch(`https://www.googleapis.com/drive/v3/files?${params.toString()}`, {
+		method: 'GET',
+		headers: {
+			Authorization: `Bearer ${await getAccessToken()}`,
+			'Content-Type': 'application/json',
 		},
-	);
+	});
 
 	const data = await response.json();
 	console.log('findFolder', data);
@@ -237,18 +213,12 @@ async function createFolder(name: string): Promise<string> {
 
 export const searchByThreadId = async (threadId: string, parentId: string) => {
 	const params = new URLSearchParams();
-	params.append(
-		'q',
-		`'${parentId}' in parents and name contains 'thread-${threadId}'`,
-	);
-	const searchResponse = await fetch(
-		`https://www.googleapis.com/drive/v3/files?${params}`,
-		{
-			headers: new Headers({
-				Authorization: `Bearer ${await getAccessToken()}`,
-			}),
-		},
-	);
+	params.append('q', `'${parentId}' in parents and name contains 'thread-${threadId}'`);
+	const searchResponse = await fetch(`https://www.googleapis.com/drive/v3/files?${params}`, {
+		headers: new Headers({
+			Authorization: `Bearer ${await getAccessToken()}`,
+		}),
+	});
 
 	const searchData = await searchResponse.json();
 	console.log('searchData:', searchData);

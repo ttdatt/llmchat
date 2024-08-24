@@ -19,14 +19,16 @@
 		}
 	},
 	"formatter": {
-		"indentStyle": "tab"
+		"indentStyle": "tab",
+		"lineWidth": 100
 	},
 	"javascript": {
 		"formatter": {
 			"indentStyle": "tab",
 			"jsxQuoteStyle": "single",
 			"quoteStyle": "single",
-			"bracketSameLine": true
+			"bracketSameLine": true,
+			"lineWidth": 100
 		}
 	}
 }

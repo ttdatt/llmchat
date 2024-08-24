@@ -32,10 +32,7 @@ export const preprocessLaTeX = (content: string) => {
 	return inlineProcessedContent;
 };
 
-export const ChatMessage = memo(function ChatMessage({
-	text,
-	owner,
-}: ChatMessageProps) {
+export const ChatMessage = memo(function ChatMessage({ text, owner }: ChatMessageProps) {
 	const Icon = useMemo(() => {
 		if (owner === 'assistant') {
 			return <GptIcon />;
@@ -50,9 +47,7 @@ export const ChatMessage = memo(function ChatMessage({
 	const components = useMemo(
 		() => ({
 			code: (
-				props: React.ClassAttributes<HTMLElement> &
-					React.HTMLAttributes<HTMLElement> &
-					ExtraProps,
+				props: React.ClassAttributes<HTMLElement> & React.HTMLAttributes<HTMLElement> & ExtraProps,
 			) => {
 				const { children, className, node } = props;
 				const match = /language-(\w+)/.exec(className || '');

@@ -17,22 +17,19 @@ const generateText = async ({ question, thread }: GenerateTextParams) => {
 	const token = atomStore.get(llmTokenAtom);
 
 	try {
-		const response = await fetch(
-			'https://dawn-shape-88ec.trantiendat1508.workers.dev/',
-			{
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify({
-					token,
-					model,
-					question,
-					thread,
-					customInstructions,
-				}),
+		const response = await fetch('https://dawn-shape-88ec.trantiendat1508.workers.dev/', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
 			},
-		);
+			body: JSON.stringify({
+				token,
+				model,
+				question,
+				thread,
+				customInstructions,
+			}),
+		});
 
 		if (!response.ok || !response.body) {
 			throw new Error('Failed to generate text');
@@ -48,7 +45,7 @@ const generateText = async ({ question, thread }: GenerateTextParams) => {
 			atomStore.set(streamMessagesAtom, text);
 		}
 
-		atomStore.set(finishStreamingMessagesAtom, null);
+		atomStore.set(finishStreamingMessagesAtom, true);
 	} catch (error) {
 		if (error instanceof Error) {
 			notifications.show({

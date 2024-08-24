@@ -101,10 +101,7 @@ const initAtom = atom(null, async (get, set) => {
 	const localThreads = await loadLocalThreads();
 	const remoteThreads = await getAllThreads();
 
-	const mergedThreads = mergeThreads(
-		Object.values(localThreads || {}),
-		remoteThreads,
-	);
+	const mergedThreads = mergeThreads(Object.values(localThreads || {}), remoteThreads);
 	set(threadsAtom, mergedThreads);
 });
 
@@ -182,10 +179,7 @@ const streamMessagesAtom = atom(null, (get, set, text: string) => {
 		const currentThread = threads[currentThreadId ?? ''];
 		if (!currentThread || !currentThreadId) return;
 
-		const lastestMessage = maxBy(
-			Object.values(currentThread.messages),
-			'timestamp',
-		);
+		const lastestMessage = maxBy(Object.values(currentThread.messages), 'timestamp');
 
 		if (!lastestMessage) return;
 

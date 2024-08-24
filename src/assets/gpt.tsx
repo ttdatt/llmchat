@@ -4,11 +4,7 @@ export type GptIconProps = {
 
 export const GptIcon = () => (
 	<div className='size-8 min-w-8 p-1 rounded-full bg-violet-400'>
-		<svg
-			viewBox='0 0 41 41'
-			fill='none'
-			xmlns='http://www.w3.org/2000/svg'
-			strokeWidth={1.5}>
+		<svg viewBox='0 0 41 41' fill='none' xmlns='http://www.w3.org/2000/svg' strokeWidth={1.5}>
 			<title>gpt-4 logo</title>
 			<path
 				className='fill-white'

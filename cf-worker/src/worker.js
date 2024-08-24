@@ -56,12 +56,8 @@ async function handleOptions(request) {
 	) {
 		// Handle CORS preflight requests.
 		return new Response(null, {
-			headers: {
-				...corsHeaders,
-				'Access-Control-Allow-Headers': request.headers.get(
-					'Access-Control-Request-Headers',
-				),
-			},
+			status: 204,
+			headers: { ...corsHeaders },
 		});
 	}
 	// Handle standard OPTIONS request.
@@ -73,7 +69,7 @@ async function handleOptions(request) {
 }
 
 export default {
-	async fetch(request, env, ctx) {
+	async fetch(request, _env, ctx) {
 		if (request.method === 'OPTIONS') {
 			// Handle CORS preflight requests
 			return handleOptions(request);
@@ -126,9 +122,7 @@ export default {
 						if (messageStreamEvent.delta.type === 'text_delta') {
 							writer.write(textEncoder.encode(messageStreamEvent.delta.text));
 						} else {
-							writer.write(
-								textEncoder.encode(messageStreamEvent.delta.partial_json),
-							);
+							writer.write(textEncoder.encode(messageStreamEvent.delta.partial_json));
 						}
 					}
 				}
@@ -137,9 +131,10 @@ export default {
 			})(),
 		);
 
-		const response = new Response(readable);
-		response.headers.set('Access-Control-Allow-Origin', '*');
-		response.headers.append('Vary', 'Origin');
+		const response = new Response(readable, {
+			status: 200,
+			headers: { ...corsHeaders, 'Content-Type': 'text/plain' },
+		});
 		return response;
 	},
 };

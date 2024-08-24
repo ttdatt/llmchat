@@ -15,16 +15,8 @@ import {
 import { useEffect, useMemo, useState } from 'react';
 import { LlmModel, models } from '@/types/LlmTypes';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
-import {
-	customInstructionsAtom,
-	llmTokensAtom,
-	modalVisibleAtom,
-} from '@/atom/atoms';
-import {
-	deleteAllThreadsAtom,
-	llmTokenAtom,
-	modelAtom,
-} from '@/atom/derivedAtoms';
+import { customInstructionsAtom, llmTokensAtom, modalVisibleAtom } from '@/atom/atoms';
+import { deleteAllThreadsAtom, llmTokenAtom, modelAtom } from '@/atom/derivedAtoms';
 import { decrypt } from '@/utils/crypto';
 import { useMobile } from '@/hooks/useMobile';
 
@@ -138,10 +130,7 @@ export const Settings = () => {
 			<Divider className='my-3 mx-0' />
 			<div className='flex flex-row gap-2 items-center justify-between'>
 				<Text className='w-1/3'>Models</Text>
-				<ModelCombobox
-					selectedModel={selectedModel}
-					onChange={(m) => setModel(m)}
-				/>
+				<ModelCombobox selectedModel={selectedModel} onChange={(m) => setModel(m)} />
 			</div>
 			<Divider className='my-3 mx-0' />
 			<div className='flex flex-row gap-2 items-center justify-between'>

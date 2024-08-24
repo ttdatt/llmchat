@@ -70,8 +70,7 @@ export const encrypt = async (plaintext: string, password: string = pass) => {
 };
 
 export async function decrypt(ciphertext: string, password: string = pass) {
-	const [_hasPass, encodedBase64Data, base64Salt, base64Iv] =
-		ciphertext.split(';');
+	const [_hasPass, encodedBase64Data, base64Salt, base64Iv] = ciphertext.split(';');
 
 	const salt = base64ToArrayBuffer(base64Salt);
 	const iv = base64ToArrayBuffer(base64Iv);

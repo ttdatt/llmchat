@@ -12,9 +12,7 @@ if (!isWeb) {
 const storeTheads = async (threads: Record<string, Thread>) => {
 	if (isWeb) {
 		return db.transaction('rw', db.threads, () => {
-			return Promise.all(
-				Object.values(threads).map((thread) => db.threads.put(thread)),
-			);
+			return Promise.all(Object.values(threads).map((thread) => db.threads.put(thread)));
 		});
 	}
 	await store.set('threads', threads);

@@ -28,11 +28,7 @@ const initializeClient = (token: string) => {
 	return openai;
 };
 
-const generateText = async ({
-	question,
-	thread,
-	onFinish,
-}: GenerateTextParams) => {
+const generateText = async ({ question, thread, onFinish }: GenerateTextParams) => {
 	// const STEP = 10;
 	// let offset = 0;
 	// const r = await fetch(codeText);

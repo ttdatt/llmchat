@@ -2,12 +2,7 @@ import { Button, Drawer } from '@mantine/core';
 import classes from './Nav.module.css';
 import { NavItem } from './NavItem';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
-import {
-	currentThreadIdAtom,
-	drawerAtom,
-	modalVisibleAtom,
-	threadsAtom,
-} from '@/atom/atoms';
+import { currentThreadIdAtom, drawerAtom, modalVisibleAtom, threadsAtom } from '@/atom/atoms';
 import orderBy from 'lodash/orderBy';
 import { createNewThreadAtom } from '@/atom/derivedAtoms';
 import { SettingsButton } from './SettingsButton';
@@ -19,9 +14,9 @@ export function Navbar() {
 	const openSettings = useSetAtom(modalVisibleAtom);
 	const setDrawerOpen = useSetAtom(drawerAtom);
 
-	const links = orderBy(Object.values(threads), 'timestamp', 'desc').map(
-		(t) => <NavItem key={t.id} thread={t} currentThreadId={currentThreadId} />,
-	);
+	const links = orderBy(Object.values(threads), 'timestamp', 'desc').map((t) => (
+		<NavItem key={t.id} thread={t} currentThreadId={currentThreadId} />
+	));
 
 	const onClickSettings = () => {
 		setDrawerOpen(false);
@@ -48,9 +43,9 @@ export const MobileNavBar = () => {
 	const createThread = useSetAtom(createNewThreadAtom);
 	const openSettings = useSetAtom(modalVisibleAtom);
 
-	const links = orderBy(Object.values(threads), 'timestamp', 'desc').map(
-		(t) => <NavItem key={t.id} thread={t} currentThreadId={currentThreadId} />,
-	);
+	const links = orderBy(Object.values(threads), 'timestamp', 'desc').map((t) => (
+		<NavItem key={t.id} thread={t} currentThreadId={currentThreadId} />
+	));
 
 	const onClickSettings = () => {
 		setDrawerOpen(false);

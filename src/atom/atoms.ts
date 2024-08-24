@@ -16,19 +16,13 @@ const threadsAtom = atomWithImmer<Record<string, Thread>>({});
 const isStreamingAtom = atom(false);
 const modalVisibleAtom = atom(false);
 const llmTokensAtom = withImmer(
-	atomWithStorage<LlmTokensType>(
-		'tokens',
-		{ openai: '', claude: '' },
-		undefined,
-		{ getOnInit: true },
-	),
+	atomWithStorage<LlmTokensType>('tokens', { openai: '', claude: '' }, undefined, {
+		getOnInit: true,
+	}),
 );
-const selectedModelAtom = atomWithStorage(
-	'selectedModel',
-	models[0],
-	undefined,
-	{ getOnInit: true },
-);
+const selectedModelAtom = atomWithStorage('selectedModel', models[0], undefined, {
+	getOnInit: true,
+});
 const drawerAtom = atom(false);
 
 const currentUserAtom = atom<User | undefined>(undefined);

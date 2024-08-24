@@ -27,9 +27,7 @@ export const NavItem = memo(({ thread: t, currentThreadId }: NavItemProps) => {
 				setDrawerOpen(false);
 			}}
 			key={t.id}>
-			<p className='whitespace-nowrap text-ellipsis overflow-hidden mr-2'>
-				{t.title}
-			</p>
+			<p className='whitespace-nowrap text-ellipsis overflow-hidden mr-2'>{t.title}</p>
 			<Menu shadow='md' width={'auto'}>
 				<Menu.Target>
 					<UnstyledButton

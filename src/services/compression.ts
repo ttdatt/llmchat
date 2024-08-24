@@ -16,9 +16,7 @@ export async function decompress(compressedData: ArrayBuffer): Promise<string> {
 	writer.write(new Uint8Array(compressedData));
 	writer.close();
 
-	const decompressedData = await new Response(
-		decompressedStream.readable,
-	).arrayBuffer();
+	const decompressedData = await new Response(decompressedStream.readable).arrayBuffer();
 	const decoder = new TextDecoder();
 	return decoder.decode(decompressedData);
 }

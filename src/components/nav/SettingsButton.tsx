@@ -34,25 +34,19 @@ export const SettingsButton = ({ onClickSettings }: Props) => {
 			<Menu.Dropdown>
 				<Menu.Item
 					onClick={onClickSettings}
-					leftSection={
-						<IconSettings style={{ width: rem(14), height: rem(14) }} />
-					}>
+					leftSection={<IconSettings style={{ width: rem(14), height: rem(14) }} />}>
 					Settings
 				</Menu.Item>
 				{!currentUser ? (
 					<Menu.Item
 						onClick={onClickSignIn}
-						leftSection={
-							<IconLogin style={{ width: rem(14), height: rem(14) }} />
-						}>
+						leftSection={<IconLogin style={{ width: rem(14), height: rem(14) }} />}>
 						Sign in with Google
 					</Menu.Item>
 				) : (
 					<Menu.Item
 						onClick={onClickSignOut}
-						leftSection={
-							<IconLogout style={{ width: rem(14), height: rem(14) }} />
-						}>
+						leftSection={<IconLogout style={{ width: rem(14), height: rem(14) }} />}>
 						Sign Out
 					</Menu.Item>
 				)}
