@@ -1,0 +1,4 @@
+name = "dawn-shape-88ec"
+main = "src/worker.js"
+compatibility_date = "2024-08-22"
+workers_dev = true

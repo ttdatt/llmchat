@@ -1,4 +1,3 @@
-import Anthropic from '@anthropic-ai/sdk';
 import { GenerateTextParams, LlmModelClient } from '@/types/LlmTypes';
 import {
   finishStreamingMessagesAtom,
@@ -10,80 +9,45 @@ import { atomStore } from '@/atom/store';
 import { notifications } from '@mantine/notifications';
 import { customInstructionsAtom } from '@/atom/atoms';
 
-let anthropic: undefined | Anthropic;
-
-const initializeClient = (token: string) => {
-  anthropic = new Anthropic({
-    apiKey: token,
-  });
-  atomStore.sub(llmTokenAtom, async () => {
-    if (anthropic) anthropic.apiKey = (await atomStore.get(llmTokenAtom)) ?? '';
-    else
-      anthropic = new Anthropic({
-        apiKey: token,
-      });
-  });
-  return anthropic;
-};
-
 const generateText = async ({ question, thread }: GenerateTextParams) => {
-  // const STEP = 10;
-  // let offset = 0;
-  // const r = await fetch(codeText);
-  // const text = await r.text();
-
-  // const inte = setInterval(() => {
-  // 	useAppStore.getState().streamMessages(text.slice(offset, offset + STEP));
-  // 	offset += STEP;
-  // 	if (offset >= text.length) {
-  // 		clearInterval(inte);
-  // 		offset = 0;
-  // 		useAppStore.getState().finishStreamingMessages(false);
-  // 	}
-  // }, 100);
-  // return;
-
   if (!question || !thread) return;
-
-  if (!anthropic) {
-    const token = atomStore.get(llmTokenAtom);
-    if (!token) return;
-    anthropic = initializeClient(token);
-  }
 
   const model = atomStore.get(modelAtom).id;
   const customInstructions = atomStore.get(customInstructionsAtom);
+  const token = atomStore.get(llmTokenAtom);
 
   try {
-    const stream = await anthropic.messages.create({
-      model,
-      max_tokens: 1024,
-      temperature: 0.5,
-      system: customInstructions,
-      messages: [
-        ...Object.values(thread.messages).map((x) => ({
-          role: x.owner,
-          content: x.text,
-        })),
-        {
-          role: 'user',
-          content: question,
+    const response = await fetch(
+      'https://dawn-shape-88ec.trantiendat1508.workers.dev/',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
         },
-      ],
-      stream: true,
-    });
+        body: JSON.stringify({
+          token,
+          model,
+          question,
+          thread,
+          customInstructions,
+        }),
+      },
+    );
 
-    for await (const messageStreamEvent of stream) {
-      if (messageStreamEvent.type === 'content_block_delta') {
-        if (messageStreamEvent.delta.type === 'text_delta')
-          atomStore.set(streamMessagesAtom, messageStreamEvent.delta.text);
-        else
-          atomStore.set(
-            streamMessagesAtom,
-            messageStreamEvent.delta.partial_json,
-          );
-      }
+    if (!response.ok || !response.body) {
+      throw new Error('Failed to generate text');
     }
+
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder('utf-8');
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      const text = decoder.decode(value, { stream: true });
+      atomStore.set(streamMessagesAtom, text);
+    }
+
     atomStore.set(finishStreamingMessagesAtom, null);
   } catch (error) {
     if (error instanceof Error) {

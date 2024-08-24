@@ -118,6 +118,7 @@ export const Settings = () => {
       onClose={() => {
         toggle(false);
         setToken(llmToken);
+        setModel(selectedModel);
       }}
       title='Settings'>
       <div className='flex flex-row gap-2 items-center justify-between'>
