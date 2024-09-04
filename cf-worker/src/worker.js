@@ -135,7 +135,11 @@ export default {
 							},
 						);
 						const json = await response.json();
-						writer.write(textEncoder.encode(JSON.stringify(json)));
+						if (json.content?.[0]?.text) {
+							writer.write(textEncoder.encode(JSON.stringify(json.content?.[0].text)));
+						} else {
+							writer.write(textEncoder.encode(JSON.stringify(json)));
+						}
 					}
 					writer.close();
 				} catch (e) {
