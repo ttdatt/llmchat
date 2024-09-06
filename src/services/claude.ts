@@ -23,7 +23,7 @@ const generateText = async ({ question, thread, onFinish }: GenerateTextParams) 
 				'Content-Type': 'application/json',
 			},
 			body: JSON.stringify({
-				stream: false,
+				stream: true,
 				token,
 				model,
 				question,
