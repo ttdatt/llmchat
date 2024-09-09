@@ -16,6 +16,9 @@ export const MessageArea = () => {
 
 	return (
 		<div className={`flex flex-col w-full overflow-auto ${isMobile ? 'h-full' : 'w-full'}`}>
+			<p className='bg-gray-200 text-center text-xs font-mono'>
+				To enable chatting with ChatGPT or Claude, you must enter your API key in the Settings.
+			</p>
 			{isMobile && (
 				<div className='sticky top-0 left-0 right-0 px-4 flex flex-row items-center justify-between'>
 					<Burger
