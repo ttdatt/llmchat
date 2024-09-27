@@ -22,6 +22,16 @@ type LlmModel = {
 
 const models: LlmModel[] = [
 	{
+		id: 'o1-preview',
+		name: 'GPT-o1-preview',
+		type: LlmType.OpenAI,
+	},
+	{
+		id: 'o1-mini',
+		name: 'GPT-o1-mini',
+		type: LlmType.OpenAI,
+	},
+	{
 		id: 'chatgpt-4o-latest',
 		name: 'GPT-4o Latest',
 		type: LlmType.OpenAI,
