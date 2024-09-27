@@ -77,24 +77,24 @@ export default {
 		ctx.waitUntil(
 			(async () => {
 				try {
+					const body = {
+						model: data.model,
+						max_tokens: 8192,
+						temperature: 0.5,
+						system: data.customInstructions,
+						messages: [
+							...Object.values(data.thread.messages).map((x) => ({
+								role: x.owner,
+								content: x.text,
+							})),
+							{
+								role: 'user',
+								content: data.question,
+							},
+						],
+					};
 					if (data.stream) {
-						const stream = await client.messages.create({
-							model: data.model,
-							max_tokens: 1024,
-							temperature: 0.5,
-							system: data.customInstructions,
-							messages: [
-								...Object.values(data.thread.messages).map((x) => ({
-									role: x.owner,
-									content: x.text,
-								})),
-								{
-									role: 'user',
-									content: data.question,
-								},
-							],
-							stream: true,
-						});
+						const stream = await client.messages.create({ ...body, stream: true });
 
 						// loop over the data as it is streamed and write to the writeable
 						for await (const messageStreamEvent of stream) {
@@ -116,22 +116,7 @@ export default {
 									'anthropic-version': '2023-06-01',
 									'content-type': 'application/json',
 								},
-								body: JSON.stringify({
-									model: data.model,
-									max_tokens: 1024,
-									temperature: 0.5,
-									system: data.customInstructions,
-									messages: [
-										...Object.values(data.thread.messages).map((x) => ({
-											role: x.owner,
-											content: x.text,
-										})),
-										{
-											role: 'user',
-											content: data.question,
-										},
-									],
-								}),
+								body: JSON.stringify(body),
 							},
 						);
 						const json = await response.json();
