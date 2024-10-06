@@ -2,9 +2,10 @@ import { ChatMessage } from './chat/ChatMessage';
 import { ChatInput } from './ChatInput';
 import orderBy from 'lodash/orderBy';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
-import { createNewThreadAtom, currentThreadAtom } from '@/atom/derivedAtoms';
+import { addFilesToThreadAtom, createNewThreadAtom, currentThreadAtom } from '@/atom/derivedAtoms';
 import { useMobile } from '@/hooks/useMobile';
 import { Burger } from '@mantine/core';
+import { Dropzone } from '@mantine/dropzone';
 import { drawerAtom, llmTokensAtom } from '@/atom/atoms';
 import { IconEdit } from '@tabler/icons-react';
 import { isEmpty } from 'lodash';
@@ -14,6 +15,7 @@ export const MessageArea = () => {
 	const [isDrawerOpened, setDrawerOpen] = useAtom(drawerAtom);
 	const currentThread = useAtomValue(currentThreadAtom);
 	const createThread = useSetAtom(createNewThreadAtom);
+	const addFiles = useSetAtom(addFilesToThreadAtom);
 	const llmTokens = useAtomValue(llmTokensAtom);
 	const dontHaveKey = Object.values(llmTokens).every((value) => isEmpty(value.trim()));
 
@@ -39,6 +41,13 @@ export const MessageArea = () => {
 					/>
 				</div>
 			)}
+			<Dropzone.FullScreen
+				activateOnDrag
+				className='flex-1 overflow-y-auto overscroll-none'
+				onDrop={(files) => {
+					addFiles(files);
+				}}
+			/>
 			<div className='flex-1 overflow-y-auto overscroll-none'>
 				{!!currentThread &&
 					orderBy(Object.values(currentThread.messages), 'timestamp', 'asc').map((x) => {
