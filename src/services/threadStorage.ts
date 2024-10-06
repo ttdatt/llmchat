@@ -1,13 +1,15 @@
 import { Thread } from '@/types/Message';
 import { db } from './indexedDb';
-import { Store } from '@tauri-apps/plugin-store';
+import { Store, createStore } from '@tauri-apps/plugin-store';
 import { isWeb } from './platform';
 
 let store: Store;
 
-if (!isWeb) {
-	store = new Store('threads.txt');
-}
+const setupStore = async () => {
+	if (!isWeb) {
+		store = await createStore('threads.txt', { autoSave: true });
+	}
+};
 
 const storeTheads = async (threads: Record<string, Thread>) => {
 	if (isWeb) {
@@ -51,4 +53,4 @@ const clearAllThreads = async () => {
 	return isWeb ? db.threads.clear() : store.clear();
 };
 
-export { storeTheads, loadLocalThreads, clearAllThreads, deleteThread };
+export { storeTheads, loadLocalThreads, clearAllThreads, deleteThread, setupStore };

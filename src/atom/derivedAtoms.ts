@@ -7,6 +7,7 @@ import {
 	clearAllThreads,
 	deleteThread,
 	loadLocalThreads,
+	setupStore,
 	storeTheads,
 } from '@/services/threadStorage';
 import { v4 as uuidv4 } from 'uuid';
@@ -74,6 +75,7 @@ const currentThreadAtom = atom((get) => {
 });
 
 const initAtom = atom(null, async (get, set) => {
+	await setupStore();
 	const model = get(selectedModelAtom);
 
 	if (model.type === LlmType.OpenAI) llmClient = openaiClient;
