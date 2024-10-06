@@ -1,5 +1,5 @@
 import { atom } from 'jotai';
-import { Message } from '@/types/Message';
+import { CustomFileWithPath, Message } from '@/types/Message';
 import { LlmModel, LlmModelClient, LlmType } from '@/types/LlmTypes';
 import { llmClient as openaiClient } from '@/services/openai';
 import { llmClient as claudeClient } from '@/services/claude';
@@ -30,6 +30,7 @@ import {
 import { mergeThreads } from '@/services/mergeThreads';
 import { worker } from '@/workerInstance';
 import { AddThread, DeleteThread } from '@/types/Worker';
+import { FileWithPath } from '@mantine/dropzone';
 
 let llmClient: LlmModelClient;
 
@@ -210,6 +211,30 @@ const deleteAllThreadsAtom = atom(null, (_, set) => {
 	clearAllThreads();
 });
 
+const addFilesToThreadAtom = atom(null, (get, set, files: FileWithPath[]) => {
+	set(threadsAtom, (threads) => {
+		const currentThreadId = get(currentThreadIdAtom);
+		const currentThread = threads[currentThreadId ?? ''];
+		if (!currentThread || !currentThreadId) return;
+
+		if (!currentThread.files) {
+			currentThread.files = [];
+		}
+
+		currentThread.files = currentThread.files.concat(files.map((f) => ({ file: f, id: uuidv4() })));
+	});
+});
+
+const removeFileAtom = atom(null, (get, set, file: CustomFileWithPath) => {
+	set(threadsAtom, (threads) => {
+		const currentThreadId = get(currentThreadIdAtom);
+		const currentThread = threads[currentThreadId ?? ''];
+		if (!currentThread || !currentThreadId) return;
+
+		currentThread.files = currentThread.files?.filter((f) => f.id !== file.id);
+	});
+});
+
 export {
 	currentThreadAtom,
 	llmTokenAtom,
@@ -221,4 +246,6 @@ export {
 	finishStreamingMessagesAtom,
 	deleteAllThreadsAtom,
 	modelAtom,
+	addFilesToThreadAtom,
+	removeFileAtom,
 };

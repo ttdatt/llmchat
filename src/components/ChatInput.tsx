@@ -1,13 +1,16 @@
 import React, { useMemo, useState } from 'react';
 import { Textarea } from '@mantine/core';
-import { useSetAtom } from 'jotai';
-import { sendMessageAtom } from '@/atom/derivedAtoms';
+import { useAtomValue, useSetAtom } from 'jotai';
+import { currentThreadAtom, sendMessageAtom } from '@/atom/derivedAtoms';
 import { IconSend } from '@tabler/icons-react';
 import { useMobile } from '@/hooks/useMobile';
+import { FileItem } from './FileItem';
 
 export const ChatInput = () => {
 	const [keydown, setKeydown] = useState<string[]>([]);
 	const sendMessage = useSetAtom(sendMessageAtom);
+	const currentThread = useAtomValue(currentThreadAtom);
+
 	const textareaRef = React.useRef<HTMLTextAreaElement>(null);
 	const isMobile = useMobile();
 
@@ -28,6 +31,13 @@ export const ChatInput = () => {
 
 	return (
 		<div className='sticky bottom-0 p-3 pt-0 bg-white'>
+			{currentThread && (
+				<div className='gap-4 flex flex-row items-center'>
+					{currentThread.files?.map((file) => {
+						return <FileItem key={file.id} file={file} />;
+					})}
+				</div>
+			)}
 			<Textarea
 				ref={textareaRef}
 				styles={{ input: { fontSize: '1rem' } }}
