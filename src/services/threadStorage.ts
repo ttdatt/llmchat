@@ -1,13 +1,9 @@
 import { Thread } from '@/types/Message';
 import { db } from './indexedDb';
-import { Store } from '@tauri-apps/plugin-store';
+import { Store, createStore } from '@tauri-apps/plugin-store';
 import { isWeb } from './platform';
 
 let store: Store;
-
-if (!isWeb) {
-	store = new Store('threads.txt');
-}
 
 const storeTheads = async (threads: Record<string, Thread>) => {
 	if (isWeb) {
@@ -20,6 +16,9 @@ const storeTheads = async (threads: Record<string, Thread>) => {
 };
 
 const loadLocalThreads = async () => {
+	if (!isWeb) {
+		if (!store) store = await createStore('threads.txt');
+	}
 	if (isWeb) {
 		const allThreads = await db.threads.toArray();
 		const threads = allThreads.reduce(
