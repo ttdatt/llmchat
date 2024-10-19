@@ -34,7 +34,7 @@
 		"uuid": "^9.0.1"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "^1.8.3",
+		"@biomejs/biome": "1.9.4",
 		"@tauri-apps/cli": "^2.0.2",
 		"@types/lodash": "^4.17.0",
 		"@types/react": "^18.3.3",

@@ -1,50 +1,46 @@
 .navbar {
-  display: flex;
-  flex-direction: column;
-  border-right: rem(1px) solid
-    light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-4));
-  height: 100%;
-  width: 16rem;
-  min-width: 16rem;
-  max-width: 16rem;
-  padding: 1rem 1rem 0 1rem;
-  overscroll-behavior: none;
-  overflow-y: auto;
+	display: flex;
+	flex-direction: column;
+	border-right: rem(1px) solid light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-4));
+	height: 100%;
+	width: 16rem;
+	min-width: 16rem;
+	max-width: 16rem;
+	padding: 1rem 1rem 0 1rem;
+	overscroll-behavior: none;
+	overflow-y: auto;
 }
 
 .mobileNavBar {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  height: 100%;
-  padding: 1rem;
-  overscroll-behavior: none;
-  overflow-y: auto;
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+	height: 100%;
+	padding: 1rem;
+	overscroll-behavior: none;
+	overflow-y: auto;
 }
 
 .link {
-  display: flex;
-  flex: 1;
-  justify-content: space-between;
-  border-radius: var(--mantine-radius-md);
-  color: light-dark(var(--mantine-color-gray-7), var(--mantine-color-dark-0));
-  padding: 0 0.75rem;
-  font-size: var(--mantine-font-size-sm);
-  font-weight: 500;
-  height: rem(44px);
-  line-height: rem(44px);
+	display: flex;
+	flex: 1;
+	justify-content: space-between;
+	border-radius: var(--mantine-radius-md);
+	color: light-dark(var(--mantine-color-gray-7), var(--mantine-color-dark-0));
+	padding: 0 0.75rem;
+	font-size: var(--mantine-font-size-sm);
+	font-weight: 500;
+	height: rem(44px);
+	line-height: rem(44px);
 
-  &:hover {
-    background-color: light-dark(
-      var(--mantine-color-gray-1),
-      var(--mantine-color-dark-5)
-    );
-    color: light-dark(var(--mantine-color-dark), var(--mantine-color-light));
-  }
+	&:hover {
+		background-color: light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-5));
+		color: light-dark(var(--mantine-color-dark), var(--mantine-color-light));
+	}
 
-  &[data-active] {
-    border-left-color: var(--mantine-color-blue-filled);
-    background-color: var(--mantine-color-blue-filled);
-    color: var(--mantine-color-white);
-  }
+	&[data-active] {
+		border-left-color: var(--mantine-color-blue-filled);
+		background-color: var(--mantine-color-blue-filled);
+		color: var(--mantine-color-white);
+	}
 }

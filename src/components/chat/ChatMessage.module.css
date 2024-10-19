@@ -3,38 +3,38 @@
 .chatdiv h3,
 .chatdiv h4,
 .chatdiv p {
-  margin-top: 0;
-  margin-bottom: 1rem;
+	margin-top: 0;
+	margin-bottom: 1rem;
 }
 
 .chatdiv h1,
 .chatdiv h2,
 .chatdiv h3,
 .chatdiv h4 {
-  font-weight: bold;
+	font-weight: bold;
 }
 
 .chatdiv h1 {
-  font-size: 2rem;
+	font-size: 2rem;
 }
 .chatdiv h2 {
-  font-size: 1.5rem;
+	font-size: 1.5rem;
 }
 .chatdiv h3 {
-  font-size: 1.17rem;
+	font-size: 1.17rem;
 }
 .chatdiv h4 {
-  font-size: 1rem;
+	font-size: 1rem;
 }
 .chatdiv p {
-  font-size: 1rem;
+	font-size: 1rem;
 }
 
 .codetoolbar {
-  border-top-left-radius: 4px;
-  border-top-right-radius: 4px;
-  padding-right: 5px;
-  padding-top: 5px;
-  background: rgb(47, 47, 47);
-  color: white;
+	border-top-left-radius: 4px;
+	border-top-right-radius: 4px;
+	padding-right: 5px;
+	padding-top: 5px;
+	background: rgb(47, 47, 47);
+	color: white;
 }

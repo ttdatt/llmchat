@@ -1,9 +1,9 @@
 :root {
-  overscroll-behavior: none;
+	overscroll-behavior: none;
 }
 
 @layer tailwind {
-  @tailwind base;
+	@tailwind base;
 }
 
 @tailwind components;
