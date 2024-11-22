@@ -59,10 +59,10 @@ const generateText = async ({ question, thread, onFinish }: GenerateTextParams) 
 	try {
 		const stream = await openai.chat.completions.create({
 			model,
-			temperature: 0.5,
+			temperature: model.includes('o1') ? 1 : 0.5,
 			messages: [
 				{
-					role: 'system',
+					role: model.includes('o1') ? 'assistant' : 'system',
 					content: customInstructions,
 				},
 				...Object.values(thread.messages).map((x) => ({
