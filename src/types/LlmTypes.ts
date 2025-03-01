@@ -42,6 +42,11 @@ const models: LlmModel[] = [
 		type: LlmType.OpenAI,
 	},
 	{
+		id: 'claude-3-7-sonnet-latest',
+		name: 'Claude 3.7 Sonnet',
+		type: LlmType.Claude,
+	},
+	{
 		id: 'claude-3-5-sonnet-latest',
 		name: 'Claude 3.5 Sonnet',
 		type: LlmType.Claude,

@@ -101,13 +101,14 @@ export const ChatMessage = memo(function ChatMessage({ text, owner }: ChatMessag
 				<Text size='lg' fw={600} lh='2rem'>
 					{owner === 'assistant' ? 'Assistant' : 'You'}
 				</Text>
-				<Markdown
-					className={classes.chatdiv}
-					components={components}
-					remarkPlugins={[remarkMath]}
-					rehypePlugins={[rehypeKatex]}>
-					{processedText}
-				</Markdown>
+				<div className={classes.chatdiv}>
+					<Markdown
+						components={components}
+						remarkPlugins={[remarkMath]}
+						rehypePlugins={[rehypeKatex]}>
+						{processedText}
+					</Markdown>
+				</div>
 			</div>
 		</section>
 	);
