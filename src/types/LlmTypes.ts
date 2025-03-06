@@ -16,44 +16,50 @@ enum LlmType {
 
 type LlmModel = {
 	id: string;
+	modelId: string;
 	name: string;
 	type: LlmType;
+	reasoning?: 'high' | 'medium' | 'low';
 };
 
 const models: LlmModel[] = [
 	{
-		id: 'o1-preview',
-		name: 'GPT-o1-preview',
+		id: 'o3-mini-high',
+		modelId: 'o3-mini',
+		reasoning: 'high',
+		name: 'o3 mini high',
+		type: LlmType.OpenAI,
+	},
+	{
+		id: 'o3-mini-medium',
+		modelId: 'o3-mini',
+		reasoning: 'medium',
+		name: 'o3 mini medium',
+		type: LlmType.OpenAI,
+	},
+	{
+		id: 'o3-mini-low',
+		modelId: 'o3-mini',
+		reasoning: 'low',
+		name: 'o3 mini low',
+		type: LlmType.OpenAI,
+	},
+	{
+		id: 'o1',
+		modelId: 'o1',
+		name: ' o1',
 		type: LlmType.OpenAI,
 	},
 	{
 		id: 'o1-mini',
-		name: 'GPT-o1-mini',
-		type: LlmType.OpenAI,
-	},
-	{
-		id: 'chatgpt-4o-latest',
-		name: 'GPT-4o Latest',
-		type: LlmType.OpenAI,
-	},
-	{
-		id: 'gpt-4o',
-		name: 'GPT-4o',
+		modelId: 'o1-mini',
+		name: 'o1 mini',
 		type: LlmType.OpenAI,
 	},
 	{
 		id: 'claude-3-7-sonnet-latest',
+		modelId: 'claude-3-7-sonnet-latest',
 		name: 'Claude 3.7 Sonnet',
-		type: LlmType.Claude,
-	},
-	{
-		id: 'claude-3-5-sonnet-latest',
-		name: 'Claude 3.5 Sonnet',
-		type: LlmType.Claude,
-	},
-	{
-		id: 'claude-3-opus-latest',
-		name: 'Claude 3 Opus',
 		type: LlmType.Claude,
 	},
 ];

@@ -7,7 +7,7 @@ import { User } from '@/types/User';
 
 const customInstructionsAtom = atomWithStorage<string>(
 	'instructions',
-	'Embody the role of the most qualified subject matter experts. Keep your response brief and focused. Keep responses unique and free of repetition. Exclude personal ethics or morals unless explicitly relevant. Acknowledge and correct any past errors.',
+	'Formatting re-enabled. Embody the role of the most qualified subject matter experts. Keep your response brief and focused. Keep responses unique and free of repetition. Exclude personal ethics or morals unless explicitly relevant. Acknowledge and correct any past errors.',
 	undefined,
 	{ getOnInit: true },
 );

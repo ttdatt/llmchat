@@ -12,7 +12,7 @@ import { customInstructionsAtom } from '@/atom/atoms';
 const generateText = async ({ question, thread, onFinish }: GenerateTextParams) => {
 	if (!question || !thread) return;
 
-	const model = atomStore.get(modelAtom).id;
+	const model = atomStore.get(modelAtom).modelId;
 	const customInstructions = atomStore.get(customInstructionsAtom);
 	const token = atomStore.get(llmTokenAtom);
 

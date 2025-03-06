@@ -9,6 +9,7 @@ import {
 import { atomStore } from '@/atom/store';
 import { notifications } from '@mantine/notifications';
 import { customInstructionsAtom } from '@/atom/atoms';
+import { ChatCompletionCreateParamsStreaming } from 'openai/resources/index.mjs';
 
 // import fileText from '../../assets/msg.txt';
 // import codeText from '../assets/code.txt';
@@ -26,6 +27,10 @@ const initializeClient = (token: string) => {
 		openai.apiKey = (await atomStore.get(llmTokenAtom)) ?? '';
 	});
 	return openai;
+};
+
+const isReasonModalFamily = (model: string) => {
+	return model.includes('o1') || model.includes('o3');
 };
 
 const generateText = async ({ question, thread, onFinish }: GenerateTextParams) => {
@@ -53,16 +58,17 @@ const generateText = async ({ question, thread, onFinish }: GenerateTextParams) 
 		openai = initializeClient(token);
 	}
 
-	const model = atomStore.get(modelAtom).id;
+	const model = atomStore.get(modelAtom);
+	const modelId = model.modelId;
 	const customInstructions = atomStore.get(customInstructionsAtom);
 
 	try {
-		const stream = await openai.chat.completions.create({
-			model,
-			temperature: model.includes('o1') ? 1 : 0.5,
+		const body: ChatCompletionCreateParamsStreaming = {
+			model: modelId,
+			temperature: isReasonModalFamily(modelId) ? 1 : 0.5,
 			messages: [
 				{
-					role: model.includes('o1') ? 'assistant' : 'system',
+					role: 'developer',
 					content: customInstructions,
 				},
 				...Object.values(thread.messages).map((x) => ({
@@ -75,7 +81,11 @@ const generateText = async ({ question, thread, onFinish }: GenerateTextParams) 
 				},
 			],
 			stream: true,
-		});
+		};
+		if (model.reasoning) {
+			body.reasoning_effort = model.reasoning;
+		}
+		const stream = await openai.chat.completions.create(body);
 
 		for await (const chunk of stream) {
 			atomStore.set(streamMessagesAtom, chunk.choices[0]?.delta?.content || '');
