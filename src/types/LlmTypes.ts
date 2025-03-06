@@ -22,18 +22,18 @@ type LlmModel = {
 
 const models: LlmModel[] = [
 	{
-		id: 'o1-preview',
-		name: 'GPT-o1-preview',
+		id: 'o3-mini',
+		name: 'o3 mini',
+		type: LlmType.OpenAI,
+	},
+	{
+		id: 'o1',
+		name: ' o1',
 		type: LlmType.OpenAI,
 	},
 	{
 		id: 'o1-mini',
-		name: 'GPT-o1-mini',
-		type: LlmType.OpenAI,
-	},
-	{
-		id: 'chatgpt-4o-latest',
-		name: 'GPT-4o Latest',
+		name: 'o1 mini',
 		type: LlmType.OpenAI,
 	},
 	{
@@ -44,16 +44,6 @@ const models: LlmModel[] = [
 	{
 		id: 'claude-3-7-sonnet-latest',
 		name: 'Claude 3.7 Sonnet',
-		type: LlmType.Claude,
-	},
-	{
-		id: 'claude-3-5-sonnet-latest',
-		name: 'Claude 3.5 Sonnet',
-		type: LlmType.Claude,
-	},
-	{
-		id: 'claude-3-opus-latest',
-		name: 'Claude 3 Opus',
 		type: LlmType.Claude,
 	},
 ];

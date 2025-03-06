@@ -28,6 +28,10 @@ const initializeClient = (token: string) => {
 	return openai;
 };
 
+const isReasonModalFamily = (model: string) => {
+	return model.includes('o1') || model.includes('o3');
+};
+
 const generateText = async ({ question, thread, onFinish }: GenerateTextParams) => {
 	// const STEP = 10;
 	// let offset = 0;
@@ -59,10 +63,10 @@ const generateText = async ({ question, thread, onFinish }: GenerateTextParams) 
 	try {
 		const stream = await openai.chat.completions.create({
 			model,
-			temperature: model.includes('o1') ? 1 : 0.5,
+			temperature: isReasonModalFamily(model) ? 1 : 0.5,
 			messages: [
 				{
-					role: model.includes('o1') ? 'assistant' : 'system',
+					role: 'developer',
 					content: customInstructions,
 				},
 				...Object.values(thread.messages).map((x) => ({
