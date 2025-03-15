@@ -9,6 +9,7 @@ import {
 import { atomStore } from '@/atom/store';
 import { notifications } from '@mantine/notifications';
 import { customInstructionsAtom } from '@/atom/atoms';
+import { ChatCompletionCreateParamsStreaming } from 'openai/resources/index.mjs';
 
 // import fileText from '../../assets/msg.txt';
 // import codeText from '../assets/code.txt';
@@ -57,13 +58,14 @@ const generateText = async ({ question, thread, onFinish }: GenerateTextParams) 
 		openai = initializeClient(token);
 	}
 
-	const model = atomStore.get(modelAtom).id;
+	const model = atomStore.get(modelAtom);
+	const modelId = model.id;
 	const customInstructions = atomStore.get(customInstructionsAtom);
 
 	try {
-		const stream = await openai.chat.completions.create({
-			model,
-			temperature: isReasonModalFamily(model) ? 1 : 0.5,
+		const body: ChatCompletionCreateParamsStreaming = {
+			model: modelId,
+			temperature: isReasonModalFamily(modelId) ? 1 : 0.5,
 			messages: [
 				{
 					role: 'developer',
@@ -79,7 +81,11 @@ const generateText = async ({ question, thread, onFinish }: GenerateTextParams) 
 				},
 			],
 			stream: true,
-		});
+		};
+		if (model.reasoning) {
+			body.reasoning_effort = model.reasoning;
+		}
+		const stream = await openai.chat.completions.create(body);
 
 		for await (const chunk of stream) {
 			atomStore.set(streamMessagesAtom, chunk.choices[0]?.delta?.content || '');

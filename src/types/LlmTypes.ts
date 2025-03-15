@@ -18,12 +18,26 @@ type LlmModel = {
 	id: string;
 	name: string;
 	type: LlmType;
+	reasoning?: 'high' | 'medium' | 'low';
 };
 
 const models: LlmModel[] = [
 	{
 		id: 'o3-mini',
-		name: 'o3 mini',
+		reasoning: 'high',
+		name: 'o3 mini high',
+		type: LlmType.OpenAI,
+	},
+	{
+		id: 'o3-mini',
+		reasoning: 'medium',
+		name: 'o3 mini medium',
+		type: LlmType.OpenAI,
+	},
+	{
+		id: 'o3-mini',
+		reasoning: 'low',
+		name: 'o3 mini low',
 		type: LlmType.OpenAI,
 	},
 	{
@@ -34,11 +48,6 @@ const models: LlmModel[] = [
 	{
 		id: 'o1-mini',
 		name: 'o1 mini',
-		type: LlmType.OpenAI,
-	},
-	{
-		id: 'gpt-4o',
-		name: 'GPT-4o',
 		type: LlmType.OpenAI,
 	},
 	{
