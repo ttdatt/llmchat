@@ -81,5 +81,6 @@ export async function decrypt(ciphertext: string, password: string = pass) {
 		key,
 		encodedData,
 	);
-	return arrayBufferToBinaryString(decryptedData);
+	const haha = arrayBufferToBinaryString(decryptedData);
+	return haha;
 }
