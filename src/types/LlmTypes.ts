@@ -57,6 +57,12 @@ const models: LlmModel[] = [
 		type: LlmType.OpenAI,
 	},
 	{
+		id: 'chatgpt-4o-latest',
+		modelId: 'chatgpt-4o-latest',
+		name: 'GPT-4o Latest',
+		type: LlmType.OpenAI,
+	},
+	{
 		id: 'claude-3-7-sonnet-latest',
 		modelId: 'claude-3-7-sonnet-latest',
 		name: 'Claude 3.7 Sonnet',
