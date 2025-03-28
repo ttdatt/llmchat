@@ -3,6 +3,7 @@ import { Message } from '@/types/Message';
 import { LlmModel, LlmModelClient, LlmType } from '@/types/LlmTypes';
 import { llmClient as openaiClient } from '@/services/openai';
 import { llmClient as claudeClient } from '@/services/claude';
+import { llmClient as geminiClient } from '@/services/gemini';
 import {
 	clearAllThreads,
 	deleteThread,
@@ -52,19 +53,25 @@ const llmTokenAtom = unwrap(
 	),
 );
 
+const initModel = (model: LlmModel) => {
+	switch (model.type) {
+		case LlmType.OpenAI:
+			llmClient = openaiClient;
+			break;
+		case LlmType.Claude:
+			llmClient = claudeClient;
+			break;
+		case LlmType.Gemini:
+			llmClient = geminiClient;
+			break;
+	}
+};
+
 const modelAtom = atom(
 	(get) => get(selectedModelAtom),
 	(_, set, model: LlmModel) => {
 		set(selectedModelAtom, model);
-
-		switch (model.type) {
-			case LlmType.OpenAI:
-				llmClient = openaiClient;
-				break;
-			case LlmType.Claude:
-				llmClient = claudeClient;
-				break;
-		}
+		initModel(model);
 	},
 );
 
@@ -76,8 +83,7 @@ const currentThreadAtom = atom((get) => {
 const initAtom = atom(null, async (get, set) => {
 	const model = get(selectedModelAtom);
 
-	if (model.type === LlmType.OpenAI) llmClient = openaiClient;
-	else if (model.type === LlmType.Claude) llmClient = claudeClient;
+	initModel(model);
 
 	// Check if redirect from Google Authentication:
 	const params = new URLSearchParams(location.hash.substring(1));

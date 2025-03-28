@@ -16,7 +16,7 @@ const threadsAtom = atomWithImmer<Record<string, Thread>>({});
 const isStreamingAtom = atom(false);
 const modalVisibleAtom = atom(false);
 const llmTokensAtom = withImmer(
-	atomWithStorage<LlmTokensType>('tokens', { openai: '', claude: '' }, undefined, {
+	atomWithStorage<LlmTokensType>('tokens', { openai: '', claude: '', gemini: '' }, undefined, {
 		getOnInit: true,
 	}),
 );

@@ -12,6 +12,7 @@ type LlmModelClient = {
 enum LlmType {
 	OpenAI = 'openai',
 	Claude = 'claude',
+	Gemini = 'gemini',
 }
 
 type LlmModel = {
@@ -68,6 +69,24 @@ const models: LlmModel[] = [
 		name: 'Claude 3.7 Sonnet',
 		type: LlmType.Claude,
 	},
+	{
+		id: 'gemini-2.5-pro-exp-03-25',
+		modelId: 'gemini-2.5-pro-exp-03-25',
+		name: 'Gemini 2.5 Pro Exp 03-25',
+		type: LlmType.Gemini,
+	},
+	{
+		id: 'gemini-2.0-flash',
+		modelId: 'gemini-2.0-flash',
+		name: 'Gemini 2.0 Flash',
+		type: LlmType.Gemini,
+	},
+	// {
+	// 	id: 'imagen-3.0-generate-002',
+	// 	modelId: 'imagen-3.0-generate-002',
+	// 	name: 'Imagen 3.0 Generate 002',
+	// 	type: LlmType.Gemini,
+	// },
 ];
 
 type LlmTokensType = Record<LlmType, string>;
