@@ -9,6 +9,8 @@
  */
 
 import Anthropic from '@anthropic-ai/sdk';
+import { GoogleGenAI } from '@google/genai';
+
 const baseURL =
 	'https://gateway.ai.cloudflare.com/v1/902f20ca87daefc7e820749f7ea592e9/dat-anthropic-gateway/anthropic';
 
@@ -49,6 +51,53 @@ const corsHeaders = {
 	'Access-Control-Max-Age': '86400',
 	'Access-Control-Allow-Headers': 'Content-Type',
 };
+
+async function handleGeminiRequest(request, ctx) {
+	const data = await readRequestBody(request);
+	if (!data || !data.model || !data.token || !data.thread || !data.question) {
+		return new Response('Missing required fields', {
+			status: 400,
+			headers: { ...corsHeaders },
+		});
+	}
+
+	const client = new GoogleGenAI({ apiKey: data.token });
+	const { readable, writable } = new TransformStream();
+	const writer = writable.getWriter();
+	const textEncoder = new TextEncoder();
+
+	ctx.waitUntil(
+		(async () => {
+			try {
+				const chat = client.chats.create({
+					model: data.model,
+					history: Object.values(data.thread.messages).map((x) => ({
+						role: x.owner === 'user' ? 'user' : 'model',
+						parts: [{ text: x.text }]
+					})),
+					config: {
+						systemInstruction: data.customInstructions || ''
+					}
+				});
+				const stream = await chat.sendMessageStream({ message: data.question });
+				for await (const chunk of stream) {
+					if (chunk.text) {
+						writer.write(textEncoder.encode(chunk.text));
+					}
+				}
+				writer.close();
+			} catch (e) {
+				writer.write(textEncoder.encode(JSON.stringify({ error: e.message })));
+				writer.close();
+			}
+		})()
+	);
+
+	return new Response(readable, {
+		status: 200,
+		headers: { ...corsHeaders, 'Content-Type': 'text/plain' },
+	});
+}
 
 async function handleClaudeRequest(request, ctx) {
 	const data = await readRequestBody(request);
