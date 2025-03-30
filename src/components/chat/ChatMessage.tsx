@@ -1,5 +1,5 @@
 import { Text } from '@mantine/core';
-import { Message } from '@/types/Message';
+import { ChatMessageType } from '@/types/Message';
 import { GptIcon } from '@/assets/gpt';
 import { IconUserFilled } from '@tabler/icons-react';
 import Markdown, { ExtraProps } from 'react-markdown';
@@ -13,8 +13,8 @@ import 'katex/dist/katex.min.css';
 import { IconCopy } from '@tabler/icons-react';
 
 type ChatMessageProps = {
-	text: Message['text'];
-	owner: Message['owner'];
+	text: ChatMessageType['text'];
+	owner: ChatMessageType['owner'];
 };
 
 export const preprocessLaTeX = (content: string) => {

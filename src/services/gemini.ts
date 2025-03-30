@@ -48,7 +48,6 @@ const generateText = async ({ question, thread, onFinish }: GenerateTextParams) 
 
 		atomStore.set(finishStreamingMessagesAtom, true);
 
-		console.log('finished!!!');
 		if (typeof onFinish === 'function') onFinish();
 	} catch (error) {
 		if (error instanceof Error) {

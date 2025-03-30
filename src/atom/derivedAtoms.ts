@@ -1,5 +1,5 @@
 import { atom } from 'jotai';
-import { Message } from '@/types/Message';
+import { ChatMessageType } from '@/types/Message';
 import { LlmModel, LlmModelClient, LlmType } from '@/types/LlmTypes';
 import { llmClient as openaiClient } from '@/services/openai';
 import { llmClient as claudeClient } from '@/services/claude';
@@ -148,7 +148,7 @@ const sendMessageAtom = atom(null, async (get, set, message: string) => {
 				}
 			},
 		});
-		const msg: Message = {
+		const msg: ChatMessageType = {
 			id: uuidv4(),
 			owner: 'user',
 			text: message,
@@ -190,7 +190,7 @@ const streamMessagesAtom = atom(null, (get, set, text: string) => {
 		if (!lastestMessage) return;
 
 		if (lastestMessage.owner === 'user') {
-			const msg: Message = {
+			const msg: ChatMessageType = {
 				id: uuidv4(),
 				owner: 'assistant',
 				text: text,

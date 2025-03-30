@@ -1,4 +1,4 @@
-import { Message, Thread } from '@/types/Message';
+import { ChatMessageType, Thread } from '@/types/Message';
 
 const NUMBER_OF_SYNCED_RECORDS = 100;
 
@@ -37,8 +37,8 @@ export const mergeThreads = (
 };
 
 const mergeMessages = (
-	messages1: Record<string, Message>,
-	messages2: Record<string, Message>,
-): Record<string, Message> => {
+	messages1: Record<string, ChatMessageType>,
+	messages2: Record<string, ChatMessageType>,
+): Record<string, ChatMessageType> => {
 	return { ...messages1, ...messages2 };
 };

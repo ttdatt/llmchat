@@ -1,11 +1,11 @@
 export type Thread = {
 	id: string;
 	title: string;
-	messages: Record<string, Message>;
+	messages: Record<string, ChatMessageType>;
 	timestamp: string;
 };
 
-export type Message = {
+export type ChatMessageType = {
 	id: string;
 	owner: 'user' | 'assistant';
 	text: string;

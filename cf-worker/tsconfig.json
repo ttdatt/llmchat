@@ -1,0 +1,23 @@
+{
+	"compilerOptions": {
+		"target": "ES2020",
+		"useDefineForClassFields": true,
+		"lib": ["ES2020", "DOM", "DOM.Iterable"],
+		"module": "ESNext",
+		"skipLibCheck": true,
+		/* Bundler mode */
+		"moduleResolution": "bundler",
+		"allowImportingTsExtensions": true,
+		"resolveJsonModule": true,
+		"isolatedModules": true,
+		"noEmit": true,
+		/* Linting */
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"noFallthroughCasesInSwitch": true,
+		"types": ["./worker-configuration.d.ts", "node"],
+		"baseUrl": ".",
+		"allowSyntheticDefaultImports": true
+	},
+	"exclude": ["./node_modules", "./worker-configuration.d.ts"]
+}

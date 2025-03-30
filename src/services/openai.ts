@@ -94,7 +94,6 @@ const generateText = async ({ question, thread, onFinish }: GenerateTextParams) 
 		atomStore.set(finishStreamingMessagesAtom, true);
 
 		// trigger sync to cloud
-		console.log('finished!!!');
 		if (typeof onFinish === 'function') {
 			onFinish();
 		}
