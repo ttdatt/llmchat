@@ -17,7 +17,7 @@ const generateText = async ({ question, thread, onFinish }: GenerateTextParams) 
 	const token = atomStore.get(llmTokenAtom);
 
 	try {
-		const response = await fetch('https://icy-night-f14d.trantiendat1508.workers.dev/', {
+		const response = await fetch('https://icy-night-f14d.trantiendat1508.workers.dev/anthropic', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
