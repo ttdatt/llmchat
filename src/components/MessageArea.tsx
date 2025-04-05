@@ -42,7 +42,7 @@ export const MessageArea = () => {
 			<div className='flex-1 overflow-y-auto overscroll-none'>
 				{!!currentThread &&
 					orderBy(Object.values(currentThread.messages), 'timestamp', 'asc').map((x) => {
-						return <ChatMessage key={x.id} text={x.text} owner={x.owner} />;
+						return <ChatMessage key={x.id} text={x.text} image={x.image} owner={x.owner} />;
 					})}
 			</div>
 			<ChatInput />

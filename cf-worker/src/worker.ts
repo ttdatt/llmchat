@@ -8,7 +8,7 @@
  * Learn more at https://developers.cloudflare.com/workers/
  */
 
-import { handleGeminiRequest } from './gemini';
+import { handleGeminiRequest, generateGeminiImage } from './gemini';
 import { handleClaudeRequest } from './claude';
 import { corsHeaders } from './utlis';
 
@@ -31,6 +31,10 @@ export default {
 
 		if (path === '/gemini') {
 			return handleGeminiRequest(request, ctx);
+		}
+
+		if (path === '/gemini-image') {
+			return generateGeminiImage(request, ctx);
 		}
 
 		return new Response('Not found', { status: 404 });

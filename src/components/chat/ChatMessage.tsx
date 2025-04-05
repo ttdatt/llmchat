@@ -15,6 +15,7 @@ import { IconCopy } from '@tabler/icons-react';
 type ChatMessageProps = {
 	text: ChatMessageType['text'];
 	owner: ChatMessageType['owner'];
+	image?: ChatMessageType['image'];
 };
 
 export const preprocessLaTeX = (content: string) => {
@@ -32,7 +33,7 @@ export const preprocessLaTeX = (content: string) => {
 	return inlineProcessedContent;
 };
 
-export const ChatMessage = memo(function ChatMessage({ text, owner }: ChatMessageProps) {
+export const ChatMessage = memo(function ChatMessage({ text, owner, image }: ChatMessageProps) {
 	const Icon = useMemo(() => {
 		if (owner === 'assistant') {
 			return <GptIcon />;
@@ -101,6 +102,9 @@ export const ChatMessage = memo(function ChatMessage({ text, owner }: ChatMessag
 				<Text size='lg' fw={600} lh='2rem'>
 					{owner === 'assistant' ? 'Assistant' : 'You'}
 				</Text>
+				{!!image && (
+					<img src={image} alt='Generated content' className='max-h-80 object-contain my-2' />
+				)}
 				<div className={classes.chatdiv}>
 					<Markdown
 						components={components}
