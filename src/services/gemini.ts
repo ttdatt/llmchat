@@ -1,4 +1,4 @@
-import { GenerateTextParams, LlmModelClient } from '@/types/LlmTypes';
+import { GenerateTextParams, LlmModelClient, GenerateImageParams } from '@/types/LlmTypes';
 import {
 	finishStreamingMessagesAtom,
 	llmTokenAtom,
@@ -61,8 +61,82 @@ const generateText = async ({ question, thread, onFinish }: GenerateTextParams) 
 	}
 };
 
+const generateImage = async ({ prompt, onFinish }: GenerateImageParams): Promise<string | null> => {
+	if (!prompt) {
+		console.error('Prompt is required for image generation');
+		return null;
+	}
+
+	const token = atomStore.get(llmTokenAtom);
+
+	if (!token) {
+		notifications.show({
+			title: 'Error',
+			message: 'Gemini API token not set',
+			color: 'red',
+			autoClose: 5000,
+		});
+		return null;
+	}
+	const model = atomStore.get(modelAtom)?.modelId;
+
+	try {
+		const response = await fetch(
+			'https://icy-night-f14d.trantiendat1508.workers.dev/gemini-image',
+			{
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					token,
+					model,
+					question: prompt,
+				}),
+			},
+		);
+
+		if (!response.ok) {
+			let errorMsg = 'Failed to generate image';
+			try {
+				const errorData = await response.json();
+				errorMsg = errorData?.error || errorMsg;
+			} catch (e) {}
+			throw new Error(errorMsg);
+		}
+
+		if (!response.body) {
+			throw new Error('No response body received from image generation');
+		}
+
+		const blob = await response.blob();
+
+		return new Promise((resolve, reject) => {
+			const reader = new FileReader();
+			reader.onloadend = () => {
+				resolve(reader.result as string);
+			};
+			reader.onerror = reject;
+			reader.readAsDataURL(blob);
+		});
+	} catch (error) {
+		if (error instanceof Error) {
+			notifications.show({
+				title: 'Image Generation Error',
+				message: error.message,
+				color: 'red',
+				autoClose: 10000,
+			});
+		}
+		return null;
+	} finally {
+		if (typeof onFinish === 'function') onFinish();
+	}
+};
+
 const llmClient: LlmModelClient = {
 	generateText,
+	generateImage,
 };
 
 export { llmClient };

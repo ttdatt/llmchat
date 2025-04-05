@@ -135,6 +135,52 @@ const sendMessageAtom = atom(null, async (get, set, message: string) => {
 
 	if (currentThreadId) {
 		const currentThread = get(threadsAtom)[currentThreadId];
+
+		const msg: ChatMessageType = {
+			id: uuidv4(),
+			owner: 'user',
+			text: message,
+			timestamp: new Date().toISOString(),
+		};
+		set(threadsAtom, (state) => {
+			if (state[currentThreadId].title === 'New Thread') {
+				state[currentThreadId].title = message.slice(0, 100);
+			}
+			state[currentThreadId].messages[msg.id] = msg;
+		});
+
+		const model = get(selectedModelAtom);
+		if (model.modelId === 'imagen-3.0-generate-002') {
+			set(isStreamingAtom, true);
+			const imageDataUrl = await llmClient.generateImage?.({
+				prompt: message,
+			});
+			set(isStreamingAtom, false);
+
+			if (imageDataUrl) {
+				const imgMsg: ChatMessageType = {
+					id: uuidv4(),
+					owner: 'assistant',
+					text: '',
+					image: imageDataUrl,
+					timestamp: new Date().toISOString(),
+				};
+				set(threadsAtom, (state) => {
+					state[currentThreadId].messages[imgMsg.id] = imgMsg;
+				});
+				storeTheads(get(threadsAtom));
+				if (get(currentUserAtom)) {
+					const postData: AddThread = {
+						type: 'add-thread',
+						threadId: currentThreadId,
+					};
+					worker.postMessage(postData);
+				}
+			}
+			return;
+		}
+
+		set(isStreamingAtom, true);
 		llmClient.generateText({
 			question: message,
 			thread: currentThread,
@@ -147,18 +193,6 @@ const sendMessageAtom = atom(null, async (get, set, message: string) => {
 					worker.postMessage(postData);
 				}
 			},
-		});
-		const msg: ChatMessageType = {
-			id: uuidv4(),
-			owner: 'user',
-			text: message,
-			timestamp: new Date().toISOString(),
-		};
-		set(threadsAtom, (state) => {
-			if (state[currentThreadId].title === 'New Thread') {
-				state[currentThreadId].title = message.slice(0, 100);
-			}
-			state[currentThreadId].messages[msg.id] = msg;
 		});
 	}
 });

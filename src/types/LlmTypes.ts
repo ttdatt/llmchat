@@ -5,8 +5,15 @@ export type GenerateTextParams = {
 	thread?: Thread;
 	onFinish?: () => Promise<void> | void;
 };
+
+export type GenerateImageParams = {
+	prompt: string;
+	onFinish?: () => Promise<void> | void;
+};
+
 type LlmModelClient = {
 	generateText: (params: GenerateTextParams) => Promise<void>;
+	generateImage?: (params: GenerateImageParams) => Promise<string | null>;
 };
 
 enum LlmType {
@@ -52,12 +59,6 @@ const models: LlmModel[] = [
 		type: LlmType.OpenAI,
 	},
 	{
-		id: 'o1-mini',
-		modelId: 'o1-mini',
-		name: 'o1 mini',
-		type: LlmType.OpenAI,
-	},
-	{
 		id: 'chatgpt-4o-latest',
 		modelId: 'chatgpt-4o-latest',
 		name: 'GPT-4o Latest',
@@ -81,12 +82,12 @@ const models: LlmModel[] = [
 		name: 'Gemini 2.0 Flash',
 		type: LlmType.Gemini,
 	},
-	// {
-	// 	id: 'imagen-3.0-generate-002',
-	// 	modelId: 'imagen-3.0-generate-002',
-	// 	name: 'Imagen 3.0 Generate 002',
-	// 	type: LlmType.Gemini,
-	// },
+	{
+		id: 'imagen-3.0-generate-002',
+		modelId: 'imagen-3.0-generate-002',
+		name: 'Imagen 3.0 Generate 002',
+		type: LlmType.Gemini,
+	},
 ];
 
 type LlmTokensType = Record<LlmType, string>;

@@ -1,3 +1,4 @@
 name = "icy-night-f14d"
 main = "worker.js"
+compatibility_flags = [ "nodejs_compat" ]
 compatibility_date = "2023-08-23"
