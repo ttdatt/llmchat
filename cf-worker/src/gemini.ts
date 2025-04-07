@@ -20,6 +20,10 @@ export async function generateGeminiImage(request: Request, ctx: ExecutionContex
 			prompt: data.question,
 			config: {
 				numberOfImages: 1,
+				httpOptions: {
+					baseUrl:
+						'https://gateway.ai.cloudflare.com/v1/902f20ca87daefc7e820749f7ea592e9/dat-anthropic-gateway/google-ai-studio',
+				},
 			},
 		});
 
@@ -81,6 +85,10 @@ export async function handleGeminiRequest(request: Request, ctx: ExecutionContex
 					history,
 					config: {
 						systemInstruction: data.customInstructions || '',
+						httpOptions: {
+							baseUrl:
+								'https://gateway.ai.cloudflare.com/v1/902f20ca87daefc7e820749f7ea592e9/dat-anthropic-gateway/google-ai-studio',
+						},
 					},
 				});
 				const stream = await chat.sendMessageStream({ message: data.question });
@@ -91,11 +99,12 @@ export async function handleGeminiRequest(request: Request, ctx: ExecutionContex
 				}
 				writer.close();
 			} catch (error: unknown) {
-				const errorMessage = error instanceof Error ? error.message : 'An internal error occurred';
-				return new Response(JSON.stringify({ error: errorMessage }), {
-					status: 500,
-					headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-				});
+				if (error instanceof Error) {
+					writer.write(textEncoder.encode(JSON.stringify({ error: error.message })));
+				} else {
+					writer.write(textEncoder.encode(JSON.stringify({ error: 'An unknown error occurred' })));
+				}
+				writer.close();
 			}
 		})(),
 	);
