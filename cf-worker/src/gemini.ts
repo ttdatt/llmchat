@@ -3,7 +3,7 @@ import { corsHeaders, readRequestBody } from './utlis';
 import { Thread } from '../../src/types/Message';
 import { Buffer } from 'node:buffer';
 
-export async function generateGeminiImage(request: Request, ctx: ExecutionContext) {
+export async function generateGeminiImage(request: Request, _ctx: ExecutionContext) {
 	const data = await readRequestBody(request);
 	if (!data || !data.model || !data.token || !data.question) {
 		return new Response('Missing required fields (model, token, question)', {

@@ -1,3 +1,4 @@
+import { ReasoningEffort } from 'openai/resources/shared.mjs';
 import { Thread } from './Message';
 
 export type GenerateTextParams = {
@@ -27,35 +28,28 @@ type LlmModel = {
 	modelId: string;
 	name: string;
 	type: LlmType;
-	reasoning?: 'high' | 'medium' | 'low';
+	reasoning?: ReasoningEffort;
 };
 
 const models: LlmModel[] = [
 	{
-		id: 'o3-mini-high',
-		modelId: 'o3-mini',
+		id: 'o4-mini-high',
+		modelId: 'o4-mini',
 		reasoning: 'high',
-		name: 'o3 mini high',
+		name: 'o4 mini high',
 		type: LlmType.OpenAI,
 	},
 	{
-		id: 'o3-mini-medium',
-		modelId: 'o3-mini',
+		id: 'o4-mini-medium',
+		modelId: 'o4-mini',
 		reasoning: 'medium',
-		name: 'o3 mini medium',
+		name: 'o4 mini medium',
 		type: LlmType.OpenAI,
 	},
 	{
-		id: 'o3-mini-low',
-		modelId: 'o3-mini',
-		reasoning: 'low',
-		name: 'o3 mini low',
-		type: LlmType.OpenAI,
-	},
-	{
-		id: 'o1',
-		modelId: 'o1',
-		name: ' o1',
+		id: 'o3',
+		modelId: 'o3',
+		name: ' o3',
 		type: LlmType.OpenAI,
 	},
 	{
