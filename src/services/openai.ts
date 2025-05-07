@@ -30,7 +30,7 @@ const initializeClient = (token: string) => {
 };
 
 const isReasonModalFamily = (model: string) => {
-	return model.includes('o1') || model.includes('o3');
+	return model.includes('o4') || model.includes('o3');
 };
 
 const generateText = async ({ question, thread, onFinish }: GenerateTextParams) => {

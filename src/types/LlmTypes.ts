@@ -50,6 +50,7 @@ const models: LlmModel[] = [
 		id: 'o3',
 		modelId: 'o3',
 		name: ' o3',
+		reasoning: 'high',
 		type: LlmType.OpenAI,
 	},
 	{
@@ -63,6 +64,12 @@ const models: LlmModel[] = [
 		modelId: 'claude-3-7-sonnet-latest',
 		name: 'Claude 3.7 Sonnet',
 		type: LlmType.Claude,
+	},
+	{
+		id: 'gemini-2.5-pro-preview-05-06',
+		modelId: 'gemini-2.5-pro-preview-05-06',
+		name: 'Gemini 2.5 Pro Preview 05-06',
+		type: LlmType.Gemini,
 	},
 	{
 		id: 'gemini-2.5-pro-exp-03-25',
