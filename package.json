@@ -13,6 +13,7 @@
 	"dependencies": {
 		"@google/genai": "^0.7.0",
 		"@mantine/core": "^7.17.1",
+		"@mantine/dropzone": "^7.12.2",
 		"@mantine/hooks": "^7.17.1",
 		"@mantine/notifications": "^7.17.1",
 		"@tabler/icons-react": "^3.1.0",
@@ -21,7 +22,7 @@
 		"@tauri-apps/plugin-store": "^2.2.0",
 		"dexie": "^4.0.1",
 		"immer": "^10.1.1",
-		"jotai": "^2.8.4",
+		"jotai": "^2.10.0",
 		"jotai-immer": "^0.4.1",
 		"katex": "^0.16.21",
 		"lodash": "^4.17.21",
@@ -52,5 +53,6 @@
 		"tailwindcss": "^3.4.3",
 		"typescript": "^5.8.2",
 		"vite": "^5.3.2"
-	}
+	},
+	"packageManager": "yarn@1.22.22"
 }
