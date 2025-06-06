@@ -72,9 +72,9 @@ const models: LlmModel[] = [
 		type: LlmType.Claude,
 	},
 	{
-		id: 'gemini-2.5-pro-preview-05-06',
-		modelId: 'gemini-2.5-pro-preview-05-06',
-		name: 'Gemini 2.5 Pro Preview 05-06',
+		id: 'gemini-2.5-pro-preview-06-05',
+		modelId: 'gemini-2.5-pro-preview-06-05',
+		name: 'Gemini 2.5 Pro Preview 06-05',
 		type: LlmType.Gemini,
 	},
 	{
