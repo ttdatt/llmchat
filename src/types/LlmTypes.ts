@@ -54,9 +54,9 @@ const models: LlmModel[] = [
 		type: LlmType.OpenAI,
 	},
 	{
-		id: 'chatgpt-4o-latest',
-		modelId: 'chatgpt-4o-latest',
-		name: 'GPT-4o Latest',
+		id: 'gpt-4.1',
+		modelId: 'gpt-4.1',
+		name: 'GPT-4.1',
 		type: LlmType.OpenAI,
 	},
 	{
@@ -75,12 +75,6 @@ const models: LlmModel[] = [
 		id: 'gemini-2.5-pro-preview-06-05',
 		modelId: 'gemini-2.5-pro-preview-06-05',
 		name: 'Gemini 2.5 Pro Preview 06-05',
-		type: LlmType.Gemini,
-	},
-	{
-		id: 'gemini-2.5-pro-exp-03-25',
-		modelId: 'gemini-2.5-pro-exp-03-25',
-		name: 'Gemini 2.5 Pro Exp 03-25',
 		type: LlmType.Gemini,
 	},
 	{
