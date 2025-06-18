@@ -202,6 +202,7 @@ const deleteThreadAtom = atom(null, (get, set, threadId: string) => {
 	set(threadsAtom, (state) => {
 		delete state[threadId];
 	});
+	set(currentThreadIdAtom, undefined);
 
 	if (get(currentUserAtom)) {
 		const postData: DeleteThread = {
