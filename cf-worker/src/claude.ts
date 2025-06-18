@@ -32,6 +32,10 @@ export async function handleClaudeRequest(request: Request, ctx: ExecutionContex
 					temperature: 0.7,
 					system: data.customInstructions,
 					stream: true,
+					thinking: {
+						type: 'enabled',
+						budget_tokens: 10000,
+					},
 					messages: [
 						...Object.values(thread.messages).map((x) => ({
 							role: x.owner,
