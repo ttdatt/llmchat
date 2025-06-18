@@ -78,21 +78,9 @@ const models: LlmModel[] = [
 		type: LlmType.Gemini,
 	},
 	{
-		id: 'gemini-2.5-pro-preview-06-05',
-		modelId: 'gemini-2.5-pro-preview-06-05',
-		name: 'Gemini 2.5 Pro Preview 06-05',
-		type: LlmType.Gemini,
-	},
-	{
 		id: 'models/gemini-2.5-flash',
 		modelId: 'models/gemini-2.5-flash',
 		name: 'Gemini 2.5 Flash',
-		type: LlmType.Gemini,
-	},
-	{
-		id: 'models/gemini-2.5-flash-preview-05-20',
-		modelId: 'models/gemini-2.5-flash-preview-05-20',
-		name: 'Gemini 2.5 Flash Preview 05-20',
 		type: LlmType.Gemini,
 	},
 	{
