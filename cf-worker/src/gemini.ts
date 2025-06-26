@@ -16,7 +16,7 @@ export async function generateGeminiImage(request: Request, _ctx: ExecutionConte
 		const ai = new GoogleGenAI({ apiKey: data.token });
 
 		const response = await ai.models.generateImages({
-			model: 'imagen-3.0-generate-002',
+			model: data.model,
 			prompt: data.question,
 			config: {
 				numberOfImages: 1,

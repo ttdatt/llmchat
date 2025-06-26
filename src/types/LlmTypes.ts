@@ -89,6 +89,18 @@ const models: LlmModel[] = [
 		name: 'Imagen 3.0 Generate 002',
 		type: LlmType.Gemini,
 	},
+	{
+		id: 'imagen-4.0-generate-preview-06-06',
+		modelId: 'imagen-4.0-generate-preview-06-06',
+		name: 'Imagen 4.0',
+		type: LlmType.Gemini,
+	},
+	{
+		id: 'imagen-4.0-ultra-generate-preview-06-06',
+		modelId: 'imagen-4.0-ultra-generate-preview-06-06',
+		name: 'Imagen 4.0 Ultra',
+		type: LlmType.Gemini,
+	},
 ];
 
 type LlmTokensType = Record<LlmType, string>;

@@ -8,11 +8,11 @@
 		"start": "wrangler dev"
 	},
 	"devDependencies": {
-		"wrangler": "^4.20.1"
+		"wrangler": "^4.21.2"
 	},
 	"dependencies": {
 		"@anthropic-ai/sdk": "^0.54.0",
-		"@google/genai": "^1.5.0",
+		"@google/genai": "^1.7.0",
 		"@types/node": "^22.13.14"
 	}
 }
